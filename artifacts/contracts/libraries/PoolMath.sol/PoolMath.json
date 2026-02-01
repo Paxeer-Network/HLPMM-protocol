@@ -1,0 +1,26 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "PoolMath",
+  "sourceName": "contracts/libraries/PoolMath.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "InsufficientInputAmount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InsufficientLiquidity",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "InsufficientOutputAmount",
+      "type": "error"
+    }
+  ],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea264697066735822122079c22baee718f4a1ae18378553ee7654bdf1d66a466fbb12eb694b04b1729a7a64736f6c634300081b0033",
+  "deployedBytecode": "0x600080fdfea264697066735822122079c22baee718f4a1ae18378553ee7654bdf1d66a466fbb12eb694b04b1729a7a64736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

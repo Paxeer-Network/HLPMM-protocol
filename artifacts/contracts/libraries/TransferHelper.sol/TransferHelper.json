@@ -1,0 +1,26 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "TransferHelper",
+  "sourceName": "contracts/libraries/TransferHelper.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "ApproveFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "TransferFailed",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "TransferFromFailed",
+      "type": "error"
+    }
+  ],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea264697066735822122070beec59722fc927de270177e77886dfcbe4098770c30fa5449dc0698c6721f264736f6c634300081b0033",
+  "deployedBytecode": "0x600080fdfea264697066735822122070beec59722fc927de270177e77886dfcbe4098770c30fa5449dc0698c6721f264736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

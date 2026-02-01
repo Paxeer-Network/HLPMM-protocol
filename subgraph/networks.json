@@ -1,0 +1,20 @@
+{
+  "paxeer": {
+    "EventEmitter": {
+      "address": "0xF5e3E9AB378223837c744419fc21420c5B108F67",
+      "startBlock": 1
+    },
+    "MarketNFT": {
+      "address": "0x10ea19646D0E2F773426B8bb45e09d2BCc322604",
+      "startBlock": 1
+    },
+    "HLPMMFactory": {
+      "address": "0x9E2952Aa4409cDb4c755891D5214c5239CDa99Fd",
+      "startBlock": 1
+    },
+    "USID": {
+      "address": "0x49345967360A401BF99840DAFC8E51148a5B7897",
+      "startBlock": 1
+    }
+  }
+}

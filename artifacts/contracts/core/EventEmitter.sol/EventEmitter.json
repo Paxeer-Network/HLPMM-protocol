@@ -1,0 +1,417 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "EventEmitter",
+  "sourceName": "contracts/core/EventEmitter.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "FactoryAlreadySet",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "Unauthorized",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeeClaimed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "enum FeeStrategy",
+          "name": "newStrategy",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "FeeStrategyUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "MarketCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newReserveUSID",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newReserveToken",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "timestamp",
+          "type": "uint256"
+        }
+      ],
+      "name": "Swap",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "emitter",
+          "type": "address"
+        }
+      ],
+      "name": "authorizeEmitter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitFeeClaimed",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum FeeStrategy",
+          "name": "newStrategy",
+          "type": "uint8"
+        }
+      ],
+      "name": "emitFeeStrategyUpdated",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nftId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "symbol",
+          "type": "string"
+        }
+      ],
+      "name": "emitMarketCreated",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newReserveUSID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "newReserveToken",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "emitSwap",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "factory",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "isAuthorizedEmitter",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "emitter",
+          "type": "address"
+        }
+      ],
+      "name": "revokeEmitter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "factory_",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "marketNFT_",
+          "type": "address"
+        }
+      ],
+      "name": "setFactory",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x60a08060405234602257336080526106b990816100288239608051816104cd0152f35b600080fdfe6080604052600436101561001257600080fd5b60003560e01c80635e825564146104a957806366706fd21461046a578063981e16ab146103e5578063bb0cfdd014610393578063c45a01551461036a578063cd05056314610257578063d3f3b9001461017a578063db5a4cf7146100e05763e70109111461007f57600080fd5b346100db5760203660031901126100db5761009861056b565b6000546001600160a01b031633036100cb576001600160a01b03166000908152600160205260409020805460ff19169055005b6282b42960e81b60005260046000fd5b600080fd5b346100db5760803660031901126100db576100f961056b565b6101016105ad565b9033600052600160205260ff604060002054161580610165575b6100cb576040805160643581524260208201526001600160a01b03938416936024359316917f8d9dce9ef01fb9bb72f78865a564b2964cc5ccec7f727456641a3baf8fc603cd91a4005b506000546001600160a01b031633141561011b565b346100db576101203660031901126100db5761019461056b565b61019c610581565b6101a46105ad565b906101ad610597565b33600052600160205260ff604060002054161580610242575b6100cb57604080516001600160a01b03948516815291841660208301526084359082015260a435606082015260c435608082015260e43560a08201526101043560c08201524260e082015290821692909116907f7ae20bbbc1e9d63498613f872e04683422aadad8612e9cbb0b14b8a9eff0f3629061010090a3005b506000546001600160a01b03163314156101c6565b346100db5760c03660031901126100db5761027061056b565b610278610581565b90610281610597565b60843567ffffffffffffffff81116100db576102a19036906004016105c3565b60a43567ffffffffffffffff81116100db576102c19036906004016105c3565b9033600052600160205260ff604060002054161580610355575b6100cb577f13cfb22f2443625f89688fa7a0fa4fa9544d1d2db5dde47ccb4967c08f909c1891610327610335926040519560018060a01b03168652608060208701526080860190610642565b908482036040860152610642565b426060840152604435946001600160a01b039081169416929081900390a4005b506000546001600160a01b03163314156102db565b346100db5760003660031901126100db576000546040516001600160a01b039091168152602090f35b346100db5760203660031901126100db576103ac61056b565b6000546001600160a01b031633036100cb576001600160a01b03166000908152600160208190526040909120805460ff19169091179055005b346100db5760403660031901126100db5760243560048110156100db5733600052600160205260ff604060002054161580610455575b6100cb576040519081524260208201527f9f76c44275378b5ab098492cfcd9e6718050744145cb470a1ca73f3c72495504604060043592a2005b506000546001600160a01b031633141561041b565b346100db5760203660031901126100db576001600160a01b0361048b61056b565b166000526001602052602060ff604060002054166040519015158152f35b346100db5760403660031901126100db576104c261056b565b6104ca610581565b907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031633036100cb57600054906001600160a01b03821661055a576001600160a01b039081166001600160a01b03199290921682176000908155918252600160208190526040808420805460ff19908116841790915594909216835291208054909216179055005b6302a98a3760e31b60005260046000fd5b600435906001600160a01b03821682036100db57565b602435906001600160a01b03821682036100db57565b606435906001600160a01b03821682036100db57565b604435906001600160a01b03821682036100db57565b81601f820112156100db5780359067ffffffffffffffff821161062c5760405192601f8301601f19908116603f0116840167ffffffffffffffff81118582101761062c57604052828452602083830101116100db57816000926020809301838601378301015290565b634e487b7160e01b600052604160045260246000fd5b919082519283825260005b84811061066e575050826000602080949584010152601f8019910116010190565b8060208092840101518282860101520161064d56fea2646970667358221220f6b92d25bebc6808846f086a5a9c7e24b1d9be20da55f13d8c07aef7aab252bc64736f6c634300081b0033",
+  "deployedBytecode": "0x6080604052600436101561001257600080fd5b60003560e01c80635e825564146104a957806366706fd21461046a578063981e16ab146103e5578063bb0cfdd014610393578063c45a01551461036a578063cd05056314610257578063d3f3b9001461017a578063db5a4cf7146100e05763e70109111461007f57600080fd5b346100db5760203660031901126100db5761009861056b565b6000546001600160a01b031633036100cb576001600160a01b03166000908152600160205260409020805460ff19169055005b6282b42960e81b60005260046000fd5b600080fd5b346100db5760803660031901126100db576100f961056b565b6101016105ad565b9033600052600160205260ff604060002054161580610165575b6100cb576040805160643581524260208201526001600160a01b03938416936024359316917f8d9dce9ef01fb9bb72f78865a564b2964cc5ccec7f727456641a3baf8fc603cd91a4005b506000546001600160a01b031633141561011b565b346100db576101203660031901126100db5761019461056b565b61019c610581565b6101a46105ad565b906101ad610597565b33600052600160205260ff604060002054161580610242575b6100cb57604080516001600160a01b03948516815291841660208301526084359082015260a435606082015260c435608082015260e43560a08201526101043560c08201524260e082015290821692909116907f7ae20bbbc1e9d63498613f872e04683422aadad8612e9cbb0b14b8a9eff0f3629061010090a3005b506000546001600160a01b03163314156101c6565b346100db5760c03660031901126100db5761027061056b565b610278610581565b90610281610597565b60843567ffffffffffffffff81116100db576102a19036906004016105c3565b60a43567ffffffffffffffff81116100db576102c19036906004016105c3565b9033600052600160205260ff604060002054161580610355575b6100cb577f13cfb22f2443625f89688fa7a0fa4fa9544d1d2db5dde47ccb4967c08f909c1891610327610335926040519560018060a01b03168652608060208701526080860190610642565b908482036040860152610642565b426060840152604435946001600160a01b039081169416929081900390a4005b506000546001600160a01b03163314156102db565b346100db5760003660031901126100db576000546040516001600160a01b039091168152602090f35b346100db5760203660031901126100db576103ac61056b565b6000546001600160a01b031633036100cb576001600160a01b03166000908152600160208190526040909120805460ff19169091179055005b346100db5760403660031901126100db5760243560048110156100db5733600052600160205260ff604060002054161580610455575b6100cb576040519081524260208201527f9f76c44275378b5ab098492cfcd9e6718050744145cb470a1ca73f3c72495504604060043592a2005b506000546001600160a01b031633141561041b565b346100db5760203660031901126100db576001600160a01b0361048b61056b565b166000526001602052602060ff604060002054166040519015158152f35b346100db5760403660031901126100db576104c261056b565b6104ca610581565b907f00000000000000000000000000000000000000000000000000000000000000006001600160a01b031633036100cb57600054906001600160a01b03821661055a576001600160a01b039081166001600160a01b03199290921682176000908155918252600160208190526040808420805460ff19908116841790915594909216835291208054909216179055005b6302a98a3760e31b60005260046000fd5b600435906001600160a01b03821682036100db57565b602435906001600160a01b03821682036100db57565b606435906001600160a01b03821682036100db57565b604435906001600160a01b03821682036100db57565b81601f820112156100db5780359067ffffffffffffffff821161062c5760405192601f8301601f19908116603f0116840167ffffffffffffffff81118582101761062c57604052828452602083830101116100db57816000926020809301838601378301015290565b634e487b7160e01b600052604160045260246000fd5b919082519283825260005b84811061066e575050826000602080949584010152601f8019910116010190565b8060208092840101518282860101520161064d56fea2646970667358221220f6b92d25bebc6808846f086a5a9c7e24b1d9be20da55f13d8c07aef7aab252bc64736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

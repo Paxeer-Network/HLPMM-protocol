@@ -1,0 +1,159 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: EventEmitter
+    network: paxeer
+    source:
+      address: "0xF5e3E9AB378223837c744419fc21420c5B108F67"
+      abi: EventEmitter
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - Market
+        - Token
+        - Swap
+        - User
+        - MarketHourData
+        - MarketDayData
+        - ProtocolDayData
+      abis:
+        - name: EventEmitter
+          file: ./abis/EventEmitter.json
+        - name: HLPMMPool
+          file: ./abis/HLPMMPool.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: MarketCreated(indexed address,indexed address,indexed uint256,address,string,string,uint256)
+          handler: handleMarketCreated
+        - event: Swap(indexed address,indexed address,address,address,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleSwap
+        - event: FeeClaimed(indexed address,indexed uint256,indexed address,uint256,uint256)
+          handler: handleFeeClaimed
+        - event: FeeStrategyUpdated(indexed uint256,uint8,uint256)
+          handler: handleFeeStrategyUpdated
+      file: ./src/event-emitter.ts
+
+  - kind: ethereum
+    name: MarketNFT
+    network: paxeer
+    source:
+      address: "0x10ea19646D0E2F773426B8bb45e09d2BCc322604"
+      abi: MarketNFT
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MarketNFT
+        - NFTTransfer
+        - User
+      abis:
+        - name: MarketNFT
+          file: ./abis/MarketNFT.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleNFTTransfer
+        - event: FeeStrategyUpdated(indexed uint256,uint8)
+          handler: handleNFTFeeStrategyUpdated
+        - event: FeesClaimed(indexed uint256,indexed address,uint256)
+          handler: handleNFTFeesClaimed
+      file: ./src/market-nft.ts
+
+  - kind: ethereum
+    name: HLPMMFactory
+    network: paxeer
+    source:
+      address: "0x9E2952Aa4409cDb4c755891D5214c5239CDa99Fd"
+      abi: HLPMMFactory
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Protocol
+        - Market
+      abis:
+        - name: HLPMMFactory
+          file: ./abis/HLPMMFactory.json
+        - name: HLPMMPool
+          file: ./abis/HLPMMPool.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: MarketCreated(indexed address,indexed address,indexed uint256,address)
+          handler: handleFactoryMarketCreated
+      file: ./src/factory.ts
+
+  - kind: ethereum
+    name: USID
+    network: paxeer
+    source:
+      address: "0x49345967360A401BF99840DAFC8E51148a5B7897"
+      abi: ERC20
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Token
+        - UserTokenBalance
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleUSIDTransfer
+      file: ./src/usid.ts
+
+templates:
+  - kind: ethereum
+    name: HLPMMPool
+    network: paxeer
+    source:
+      abi: HLPMMPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Market
+        - Swap
+      abis:
+        - name: HLPMMPool
+          file: ./abis/HLPMMPool.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Sync(uint256,uint256)
+          handler: handleSync
+      file: ./src/pool.ts
+
+  - kind: ethereum
+    name: HLPMMToken
+    network: paxeer
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Token
+        - UserTokenBalance
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTokenTransfer
+      file: ./src/token.ts

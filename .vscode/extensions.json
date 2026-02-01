@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "JuanBlanco.solidity",
+    "NomicFoundation.hardhat-solidity",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "streetsidesoftware.code-spell-checker",
+    "EditorConfig.EditorConfig",
+    "tintinweb.solidity-visual-auditor",
+    "tintinweb.vscode-solidity-flattener",
+    "mechatroner.rainbow-csv",
+    "usernamehw.errorlens",
+    "ms-vscode.vscode-typescript-next"
+  ],
+  "unwantedRecommendations": []
+}

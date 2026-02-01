@@ -1,0 +1,126 @@
+# HLPMM Protocol
+
+Hyper-Scaling Leveraged Product Market Maker - A decentralized protocol for creating and trading tokenized markets with automated market making, dynamic fees, and NFT-based fee ownership.
+
+## Project Overview
+
+HLPMM enables permissionless market creation where anyone can launch a new token market with a single transaction. Each market includes an ERC20 token, an AMM pool paired with USID stablecoin, and an NFT representing fee ownership rights.
+
+## Documentation
+
+- [README](/README.md): Project overview, quick start, and basic usage
+- [Architecture](/docs/ARCHITECTURE.md): Contract architecture, data flows, deployment order
+- [API Reference](/docs/API.md): Complete contract API documentation
+- [Integration Guide](/docs/INTEGRATION.md): Frontend/backend integration patterns
+
+## Core Contracts
+
+### contracts/core/HLPMMFactory.sol
+Creates markets, deploys tokens via CREATE2, mints NFTs. Entry point for market creation.
+
+Key function:
+- `createMarket(string name, string symbol, FeeStrategy initialStrategy)` - Creates pool, token, and NFT
+
+### contracts/core/HLPMMPool.sol
+AMM engine with constant product formula (x*y=k) and dynamic fee calculation.
+
+Key functions:
+- `swap(address tokenIn, uint256 amountIn, uint256 amountOutMin, address to)` - Execute swap
+- `getReserves()` - Get current reserves
+- `getSpotPrice()` - Get current price
+
+### contracts/core/USID.sol
+Protocol stablecoin used as quote currency. Only factory can mint.
+
+### contracts/core/EventEmitter.sol
+Centralized event logging for off-chain indexing.
+
+## Token Contracts
+
+### contracts/tokens/HLPMMToken.sol
+ERC20 token deployed for each market. 1 billion initial supply.
+
+### contracts/tokens/MarketNFT.sol
+ERC721 representing fee ownership per market.
+
+Key functions:
+- `setFeeStrategy(uint256 tokenId, FeeStrategy strategy)` - Change fee distribution
+- `claimFees(uint256 tokenId)` - Claim accumulated fees
+
+## Periphery Contracts
+
+### contracts/periphery/HLPMMRouter.sol
+User-facing swap interface with deadline protection.
+
+Key functions:
+- `swapExactTokensForTokens(...)` - Single-hop swap
+- `swapExactTokensForTokensMultiHop(...)` - Multi-hop swap through USID
+
+### contracts/periphery/HLPMMQuoter.sol
+Read-only quotes and pool information.
+
+Key functions:
+- `quoteExactInput(amountIn, tokenIn, tokenOut)` - Get swap quote
+- `getPoolInfo(token)` - Get pool reserves, price, market cap
+
+### contracts/periphery/FeeCollector.sol
+Accumulates and distributes trading fees based on NFT strategy.
+
+## Libraries
+
+### contracts/libraries/Math.sol
+Safe math operations: min, max, sqrt, mulDiv
+
+### contracts/libraries/PoolMath.sol
+AMM calculations: getAmountOut, getAmountIn, calculatePriceImpact
+
+### contracts/libraries/FeeCalculator.sol
+Dynamic fee calculation based on pool age, volatility, concentration
+
+### contracts/libraries/TransferHelper.sol
+Safe ERC20 transfer wrappers
+
+## Deployed Contracts (Paxeer Network - Chain ID: 125)
+
+- USID: 0x49345967360A401BF99840DAFC8E51148a5B7897
+- EventEmitter: 0xF5e3E9AB378223837c744419fc21420c5B108F67
+- MarketNFT: 0x10ea19646D0E2F773426B8bb45e09d2BCc322604
+- FeeCollector: 0xFc4C0e7086edA1c147E639D9AeCa29202023c124
+- Factory: 0x9E2952Aa4409cDb4c755891D5214c5239CDa99Fd
+- Quoter: 0x7A7F18701bB323F9A36243914B9ea40088957194
+- Router: 0x228A1b26Dc4B01EDe1c34A4bbEC1BB624Df5e4f6
+
+## Key Constants
+
+- INITIAL_USID: 10,000 (minted per market)
+- INITIAL_TOKENS: 1,000,000,000 (per market)
+- BASE_FEE: 30 bps (0.30%)
+- MIN_FEE: 10 bps (0.10%)
+- MAX_FEE: 300 bps (3.00%)
+
+## Fee Strategies
+
+- CLAIM (0): Direct withdrawal to wallet
+- BURN (1): Burn USID permanently
+- AIRDROP (2): Accumulate for community distribution
+- LP_REWARDS (3): Redistribute to pool liquidity
+
+## Development
+
+```bash
+# Install
+pnpm install
+
+# Compile
+npx hardhat compile
+
+# Test (227 passing tests)
+pnpm run test
+
+# Deploy
+npx hardhat run scripts/deploy.js --network paxeer-network
+```
+
+## License
+
+GPL-3.0 - Copyright (C) 2026 PaxLabs Inc.

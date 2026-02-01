@@ -1,0 +1,15 @@
+{
+  "network": "paxeer-network",
+  "chainId": "125",
+  "deployer": "0xf263aB36de550bDa08b52d43eB253b3C0387e2bc",
+  "timestamp": "2026-02-01T12:19:19.410Z",
+  "contracts": {
+    "usid": "0x49345967360A401BF99840DAFC8E51148a5B7897",
+    "eventEmitter": "0xF5e3E9AB378223837c744419fc21420c5B108F67",
+    "marketNFT": "0x10ea19646D0E2F773426B8bb45e09d2BCc322604",
+    "feeCollector": "0xFc4C0e7086edA1c147E639D9AeCa29202023c124",
+    "factory": "0x9E2952Aa4409cDb4c755891D5214c5239CDa99Fd",
+    "quoter": "0x7A7F18701bB323F9A36243914B9ea40088957194",
+    "router": "0x228A1b26Dc4B01EDe1c34A4bbEC1BB624Df5e4f6"
+  }
+}

@@ -1,0 +1,35 @@
+# HLPMM Protocol Code Owners
+# These owners will be requested for review when someone opens a pull request.
+
+# Default owners for everything in the repo
+* @paxeer-network/core-team
+
+# Smart Contracts
+/contracts/ @paxeer-network/smart-contracts
+/contracts/core/ @paxeer-network/smart-contracts
+/contracts/tokens/ @paxeer-network/smart-contracts
+/contracts/periphery/ @paxeer-network/smart-contracts
+/contracts/libraries/ @paxeer-network/smart-contracts
+/contracts/interfaces/ @paxeer-network/smart-contracts
+
+# Tests
+/test/ @paxeer-network/smart-contracts @paxeer-network/qa
+
+# Deployment Scripts
+/scripts/ @paxeer-network/devops @paxeer-network/smart-contracts
+
+# Documentation
+/docs/ @paxeer-network/docs
+*.md @paxeer-network/docs
+
+# Configuration
+hardhat.config.js @paxeer-network/devops
+hardhat.config.ts @paxeer-network/devops
+foundry.toml @paxeer-network/devops
+package.json @paxeer-network/devops
+
+# CI/CD
+/.github/ @paxeer-network/devops
+
+# Security-sensitive files
+/SECURITY.md @paxeer-network/security @paxeer-network/core-team

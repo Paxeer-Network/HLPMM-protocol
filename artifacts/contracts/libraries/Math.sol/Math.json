@@ -1,0 +1,21 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "Math",
+  "sourceName": "contracts/libraries/Math.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "MathDivisionByZero",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "MathOverflow",
+      "type": "error"
+    }
+  ],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea2646970667358221220bf829952e2134e11861840f575e56353f402735593e1f171e74adb47e7846cb264736f6c634300081b0033",
+  "deployedBytecode": "0x600080fdfea2646970667358221220bf829952e2134e11861840f575e56353f402735593e1f171e74adb47e7846cb264736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

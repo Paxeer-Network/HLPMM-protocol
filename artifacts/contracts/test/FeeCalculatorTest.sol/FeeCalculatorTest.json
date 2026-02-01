@@ -1,0 +1,183 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "FeeCalculatorTest",
+  "sourceName": "contracts/test/FeeCalculatorTest.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculateBaseFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint32",
+          "name": "poolAge",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "volatilityBps",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "topHolderBps",
+          "type": "uint256"
+        }
+      ],
+      "name": "calculateFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "feeAmount",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "effectiveFeeBps",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "poolAge",
+          "type": "uint32"
+        }
+      ],
+      "name": "getAgeModifier",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "topHolderBps",
+          "type": "uint256"
+        }
+      ],
+      "name": "getConcentrationModifier",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getConstants",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "baseFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "maxFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "minFee",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "feeDenominator",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "poolAge",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "volatilityBps",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "topHolderBps",
+          "type": "uint256"
+        }
+      ],
+      "name": "getEffectiveFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "volatilityBps",
+          "type": "uint256"
+        }
+      ],
+      "name": "getVolatilityModifier",
+      "outputs": [
+        {
+          "internalType": "int256",
+          "name": "",
+          "type": "int256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x60808060405234601557610385908161001b8239f35b600080fdfe608080604052600436101561001357600080fd5b60003560e01c908163171e3c3714610255575080631d9ad6bc1461023757806325a59251146101be57806337c90e2a146101985780638640efef146100f05780639a295e73146100bd5763ae78d0701461006c57600080fd5b346100b85760203660031901126100b857600435601e810290808204601e14901517156100a25760209061271060405191048152f35b634e487b7160e01b600052601160045260246000fd5b600080fd5b346100b85760003660031901126100b8576080604051601e815261012c6020820152600a60408201526127106060820152f35b346100b85760803660031901126100b85760043560243563ffffffff811681036100b85761014761012361014c926102ba565b61014261013160443561028b565b61013c60643561031e565b92610302565b610302565b6102f1565b600a81121561017e5750600a905b818102908082048314901517156100a2576040916127108351920482526020820152f35b61012c811315610192575061012c9061015a565b9061015a565b346100b85760203660031901126100b85760206101b660043561031e565b604051908152f35b346100b85760603660031901126100b8576102046101e26101dd610278565b6102ba565b6101426101f060243561028b565b6101426101fe60443561031e565b936102f1565b600a81121561021a57506020600a604051908152f35b61012c81131561022f5750602061012c6101b6565b6020906101b6565b346100b85760203660031901126100b85760206101b66101dd610278565b346100b85760203660031901126100b85760209061027460043561028b565b8152f35b6004359063ffffffff821682036100b857565b6103e8811061029a5750606490565b6101f481106102a95750603290565b60c8116102b557601490565b600090565b63ffffffff16620151808110156102d15750603290565b62093a808110156102e25750601990565b62278d0011156102b557600a90565b9081601e019182126001166100a257565b919091600083820193841291129080158216911516176100a257565b6109c4811061032d5750604b90565b6103e8811061033c5750602390565b6101f41161034957600f90565b6009199056fea26469706673582212203a33c4d396272f3c54a4477279525e642d625568933f5450225cca4ee200965364736f6c634300081b0033",
+  "deployedBytecode": "0x608080604052600436101561001357600080fd5b60003560e01c908163171e3c3714610255575080631d9ad6bc1461023757806325a59251146101be57806337c90e2a146101985780638640efef146100f05780639a295e73146100bd5763ae78d0701461006c57600080fd5b346100b85760203660031901126100b857600435601e810290808204601e14901517156100a25760209061271060405191048152f35b634e487b7160e01b600052601160045260246000fd5b600080fd5b346100b85760003660031901126100b8576080604051601e815261012c6020820152600a60408201526127106060820152f35b346100b85760803660031901126100b85760043560243563ffffffff811681036100b85761014761012361014c926102ba565b61014261013160443561028b565b61013c60643561031e565b92610302565b610302565b6102f1565b600a81121561017e5750600a905b818102908082048314901517156100a2576040916127108351920482526020820152f35b61012c811315610192575061012c9061015a565b9061015a565b346100b85760203660031901126100b85760206101b660043561031e565b604051908152f35b346100b85760603660031901126100b8576102046101e26101dd610278565b6102ba565b6101426101f060243561028b565b6101426101fe60443561031e565b936102f1565b600a81121561021a57506020600a604051908152f35b61012c81131561022f5750602061012c6101b6565b6020906101b6565b346100b85760203660031901126100b85760206101b66101dd610278565b346100b85760203660031901126100b85760209061027460043561028b565b8152f35b6004359063ffffffff821682036100b857565b6103e8811061029a5750606490565b6101f481106102a95750603290565b60c8116102b557601490565b600090565b63ffffffff16620151808110156102d15750603290565b62093a808110156102e25750601990565b62278d0011156102b557600a90565b9081601e019182126001166100a257565b919091600083820193841291129080158216911516176100a257565b6109c4811061032d5750604b90565b6103e8811061033c5750602390565b6101f41161034957600f90565b6009199056fea26469706673582212203a33c4d396272f3c54a4477279525e642d625568933f5450225cca4ee200965364736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

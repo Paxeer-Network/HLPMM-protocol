@@ -1,0 +1,78 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compile Contracts",
+      "type": "shell",
+      "command": "pnpm compile",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Tests",
+      "type": "shell",
+      "command": "pnpm test",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Tests with Gas",
+      "type": "shell",
+      "command": "pnpm test:gas",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Coverage",
+      "type": "shell",
+      "command": "pnpm coverage",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Forge Test",
+      "type": "shell",
+      "command": "pnpm test:forge",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "pnpm lint",
+      "group": "build",
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Format",
+      "type": "shell",
+      "command": "pnpm format",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Deploy to Paxeer",
+      "type": "shell",
+      "command": "pnpm deploy:paxeer",
+      "group": "none",
+      "problemMatcher": []
+    },
+    {
+      "label": "Clean",
+      "type": "shell",
+      "command": "pnpm clean",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Contract Sizes",
+      "type": "shell",
+      "command": "pnpm size",
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "hlpmm-subgraph",
+  "version": "1.0.0",
+  "description": "The Graph subgraph for HLPMM Protocol",
+  "license": "GPL-3.0",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ hlpmm-protocol/hlpmm",
+    "deploy:studio": "graph deploy --studio hlpmm",
+    "create:local": "graph create --node http://localhost:8020/ hlpmm-protocol/hlpmm",
+    "remove:local": "graph remove --node http://localhost:8020/ hlpmm-protocol/hlpmm",
+    "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 hlpmm-protocol/hlpmm",
+    "test": "graph test"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "^0.68.0",
+    "@graphprotocol/graph-ts": "^0.32.0"
+  },
+  "devDependencies": {
+    "matchstick-as": "^0.6.0"
+  }
+}

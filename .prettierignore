@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+lib/
+
+# Build outputs
+artifacts/
+cache/
+out/
+coverage/
+typechain-types/
+
+# Package manager
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# IDE
+.idea/
+
+# Generated
+*.abi
+*.bin
+deployments/*.json
+broadcast/
+
+# Misc
+.gas-snapshot
+slither-report.json

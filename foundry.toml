@@ -1,0 +1,150 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# FOUNDRY CONFIGURATION
+# Paxeer Markets Smart Contracts
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[profile.default]
+# Source paths
+src = "contracts"
+test = "test/foundry"
+script = "script"
+out = "out"
+libs = ["node_modules", "lib"]
+
+# Compiler settings
+solc_version = "0.8.20"
+evm_version = "paris"
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+
+# Gas settings
+gas_limit = 9223372036854775807
+gas_price = 0
+block_gas_limit = 30000000
+
+# Test settings
+ffi = true
+verbosity = 2
+fuzz = { runs = 256, max_test_rejects = 65536 }
+invariant = { runs = 256, depth = 15, fail_on_revert = false }
+
+# Fork settings
+no_storage_caching = false
+rpc_storage_caching = { chains = "all", endpoints = "all" }
+
+# Formatting
+line_length = 120
+tab_width = 4
+bracket_spacing = true
+int_types = "long"
+multiline_func_header = "params_first"
+quote_style = "double"
+number_underscore = "thousands"
+single_line_statement_blocks = "single"
+override_spacing = false
+wrap_comments = false
+ignore = ["contracts/mocks/**"]
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# NETWORK RPC ENDPOINTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[rpc_endpoints]
+# Paxeer
+paxeer = "${PAXEER_RPC_URL}"
+paxeer_testnet = "${PAXEER_TESTNET_RPC_URL}"
+
+# Mainnets
+ethereum = "${ETHEREUM_RPC_URL}"
+polygon = "${POLYGON_RPC_URL}"
+arbitrum = "${ARBITRUM_RPC_URL}"
+optimism = "${OPTIMISM_RPC_URL}"
+base = "${BASE_RPC_URL}"
+bsc = "${BSC_RPC_URL}"
+avalanche = "${AVALANCHE_RPC_URL}"
+fantom = "${FANTOM_RPC_URL}"
+gnosis = "${GNOSIS_RPC_URL}"
+linea = "${LINEA_RPC_URL}"
+scroll = "${SCROLL_RPC_URL}"
+mantle = "${MANTLE_RPC_URL}"
+zksync = "${ZKSYNC_RPC_URL}"
+
+# Testnets
+sepolia = "${SEPOLIA_RPC_URL}"
+goerli = "${GOERLI_RPC_URL}"
+mumbai = "${MUMBAI_RPC_URL}"
+amoy = "${AMOY_RPC_URL}"
+arbitrum_sepolia = "${ARBITRUM_SEPOLIA_RPC_URL}"
+optimism_sepolia = "${OPTIMISM_SEPOLIA_RPC_URL}"
+base_sepolia = "${BASE_SEPOLIA_RPC_URL}"
+bsc_testnet = "${BSC_TESTNET_RPC_URL}"
+fuji = "${FUJI_RPC_URL}"
+
+# Local
+localhost = "http://127.0.0.1:8545"
+anvil = "http://127.0.0.1:8545"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ETHERSCAN API KEYS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[etherscan]
+paxeer = { key = "empty", url = "https://paxscan.paxeer.app/api/", chain = 125 }
+paxeer_testnet = { key = "empty", url = "https://testnet.paxscan.paxeer.app/api/", chain = 126 }
+ethereum = { key = "${ETHERSCAN_API_KEY}" }
+polygon = { key = "${POLYGONSCAN_API_KEY}" }
+arbitrum = { key = "${ARBISCAN_API_KEY}" }
+optimism = { key = "${OPTIMISM_API_KEY}" }
+base = { key = "${BASESCAN_API_KEY}", url = "https://api.basescan.org/api" }
+bsc = { key = "${BNBSCAN_API_KEY}" }
+avalanche = { key = "${SNOWTRACE_API_KEY}" }
+fantom = { key = "${FTMSCAN_API_KEY}" }
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROFILE: CI (Continuous Integration)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[profile.ci]
+fuzz = { runs = 10000 }
+invariant = { runs = 1000 }
+verbosity = 3
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROFILE: LITE (Fast compilation for development)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[profile.lite]
+optimizer = false
+via_ir = false
+fuzz = { runs = 32 }
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# PROFILE: DEEP (Deep testing)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[profile.deep]
+fuzz = { runs = 50000 }
+invariant = { runs = 10000, depth = 100 }
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DOCUMENTATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[doc]
+out = "docs"
+title = "Paxeer Markets"
+repository = "https://github.com/paxeer/smart-contracts"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FORMAT
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[fmt]
+line_length = 120
+tab_width = 4
+bracket_spacing = true
+int_types = "long"
+multiline_func_header = "params_first"
+quote_style = "double"
+number_underscore = "thousands"
