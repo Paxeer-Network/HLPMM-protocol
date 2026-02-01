@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Bitcoin",
+    "symbol": "BTC",
+    "pool": "0x25362Be44696308e046a9714544a8Da1F991b2C4",
+    "token": "0xe56a7327D85B079f1ED097ad13ceF3c42b1B9b99",
+    "nftId": "1",
+    "feeStrategy": "CLAIM",
+    "creator": "0xf263aB36de550bDa08b52d43eB253b3C0387e2bc",
+    "txHash": "0x97e40fadda55318af4316ecd04ede2426b0ef7116b27de3f44db53adef099f4f",
+    "blockNumber": 657476,
+    "timestamp": "2026-02-01T13:39:06.224Z"
+  },
+  {
+    "name": "Bitcoin",
+    "symbol": "BTC",
+    "pool": "0x4D420B09C0d519F1048861eE6F175B8c8dc7e064",
+    "token": "0x7AC7F25551282c0e2D52F6d79ccA360ff15e89a6",
+    "nftId": "1",
+    "feeStrategy": "CLAIM",
+    "creator": "0xf263aB36de550bDa08b52d43eB253b3C0387e2bc",
+    "txHash": "0x118e2e98f23f94f2ed568d106800259f289b7fe7a43cc69f8aad43f1e857aadc",
+    "blockNumber": 659656,
+    "timestamp": "2026-02-01T14:27:55.362Z"
+  }
+]

@@ -39,19 +39,19 @@ This subgraph indexes all HLPMM protocol events for frontend consumption:
 
 ```bash
 cd subgraph
-npm install
+pnpm install
 ```
 
 ### Generate Types
 
 ```bash
-npm run codegen
+pnpm run codegen
 ```
 
 ### Build
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 ## Deployment
@@ -72,10 +72,10 @@ npm run build
 
 ```bash
 # Create subgraph
-npm run create:local
+pnpm run create:local
 
 # Deploy
-npm run deploy:local
+pnpm run deploy:local
 ```
 
 ## Example Queries

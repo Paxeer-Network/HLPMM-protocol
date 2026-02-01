@@ -1,0 +1,103 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "MockNativeCoinDEX",
+  "sourceName": "contracts/test/MockNativeCoinDEX.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "getSpotPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "reservePAX",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "price_",
+          "type": "uint256"
+        }
+      ],
+      "name": "setPrice",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "stablecoins",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "isSupported",
+          "type": "bool"
+        },
+        {
+          "internalType": "uint8",
+          "name": "decimals",
+          "type": "uint8"
+        },
+        {
+          "internalType": "uint256",
+          "name": "reserve",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x60808060405234602157670de0b6b3a764000060005561016090816100278239f35b600080fdfe608080604052600436101561001357600080fd5b60003560e01c9081631fba684614610107575080635cd9e019146100d757806391b7f5ed146100be578063eb91d37e146100a05763fa8478361461005657600080fd5b3461009b57602036600319011261009b576004356001600160a01b0381160361009b576060604051600181526012602082015269d3c21bcecceda10000006040820152f35b600080fd5b3461009b57600036600319011261009b576020600054604051908152f35b3461009b57602036600319011261009b57600435600055005b3461009b57602036600319011261009b576004356001600160a01b0381160361009b576020600054604051908152f35b3461009b57600036600319011261009b578069d3c21bcecceda100000060209252f3fea26469706673582212206ccde5c1c597f007258da3769f9de3c5c1116d04713f1d75ab23f5f69fe5340264736f6c634300081b0033",
+  "deployedBytecode": "0x608080604052600436101561001357600080fd5b60003560e01c9081631fba684614610107575080635cd9e019146100d757806391b7f5ed146100be578063eb91d37e146100a05763fa8478361461005657600080fd5b3461009b57602036600319011261009b576004356001600160a01b0381160361009b576060604051600181526012602082015269d3c21bcecceda10000006040820152f35b600080fd5b3461009b57600036600319011261009b576020600054604051908152f35b3461009b57602036600319011261009b57600435600055005b3461009b57602036600319011261009b576004356001600160a01b0381160361009b576020600054604051908152f35b3461009b57600036600319011261009b578069d3c21bcecceda100000060209252f3fea26469706673582212206ccde5c1c597f007258da3769f9de3c5c1116d04713f1d75ab23f5f69fe5340264736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

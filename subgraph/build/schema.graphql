@@ -1,0 +1,278 @@
+# HLPMM Protocol Subgraph Schema
+
+# Protocol-level statistics
+type Protocol @entity {
+  id: ID!
+  totalMarkets: BigInt!
+  totalVolumeUSID: BigDecimal!
+  totalFeesUSID: BigDecimal!
+  totalSwaps: BigInt!
+  totalUsers: BigInt!
+  createdAt: BigInt!
+  updatedAt: BigInt!
+}
+
+# Market/Pool entity
+type Market @entity {
+  id: ID!
+  pool: Bytes!
+  token: Token!
+  nft: MarketNFT!
+  creator: User!
+  name: String!
+  symbol: String!
+  
+  # Reserves
+  reserveUSID: BigDecimal!
+  reserveToken: BigDecimal!
+  
+  # Pricing
+  spotPrice: BigDecimal!
+  marketCap: BigDecimal!
+  
+  # Volume & Fees
+  volumeUSID: BigDecimal!
+  volumeToken: BigDecimal!
+  feesUSID: BigDecimal!
+  
+  # Stats
+  swapCount: BigInt!
+  holderCount: BigInt!
+  
+  # Timestamps
+  createdAt: BigInt!
+  createdAtBlock: BigInt!
+  updatedAt: BigInt!
+  
+  # Relations
+  swaps: [Swap!]! @derivedFrom(field: "market")
+  hourData: [MarketHourData!]! @derivedFrom(field: "market")
+  dayData: [MarketDayData!]! @derivedFrom(field: "market")
+}
+
+# ERC20 Token entity
+type Token @entity {
+  id: ID!
+  address: Bytes!
+  name: String!
+  symbol: String!
+  decimals: Int!
+  totalSupply: BigDecimal!
+  
+  # Market reference
+  market: Market
+  
+  # Stats
+  holderCount: BigInt!
+  transferCount: BigInt!
+  
+  # Timestamps
+  createdAt: BigInt!
+}
+
+# Market NFT entity (fee ownership)
+type MarketNFT @entity {
+  id: ID!
+  tokenId: BigInt!
+  owner: User!
+  market: Market!
+  pool: Bytes!
+  
+  # Fee configuration
+  feeStrategy: FeeStrategy!
+  
+  # Fee stats
+  totalFeesClaimed: BigDecimal!
+  pendingFees: BigDecimal!
+  
+  # Timestamps
+  mintedAt: BigInt!
+  updatedAt: BigInt!
+  
+  # Relations
+  claims: [FeeClaim!]! @derivedFrom(field: "nft")
+  transfers: [NFTTransfer!]! @derivedFrom(field: "nft")
+}
+
+enum FeeStrategy {
+  CLAIM
+  BURN
+  AIRDROP
+  LP_REWARDS
+}
+
+# User entity
+type User @entity {
+  id: ID!
+  address: Bytes!
+  
+  # Stats
+  totalSwaps: BigInt!
+  totalVolumeUSID: BigDecimal!
+  marketsCreated: BigInt!
+  
+  # Timestamps
+  firstSeenAt: BigInt!
+  lastSeenAt: BigInt!
+  
+  # Relations
+  swaps: [Swap!]! @derivedFrom(field: "user")
+  ownedNFTs: [MarketNFT!]! @derivedFrom(field: "owner")
+  createdMarkets: [Market!]! @derivedFrom(field: "creator")
+  tokenBalances: [UserTokenBalance!]! @derivedFrom(field: "user")
+}
+
+# User token balance tracking
+type UserTokenBalance @entity {
+  id: ID!
+  user: User!
+  token: Token!
+  balance: BigDecimal!
+  updatedAt: BigInt!
+}
+
+# Swap transaction
+type Swap @entity {
+  id: ID!
+  market: Market!
+  user: User!
+  
+  # Transaction details
+  txHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  logIndex: BigInt!
+  
+  # Swap details
+  tokenIn: Bytes!
+  tokenOut: Bytes!
+  amountIn: BigDecimal!
+  amountOut: BigDecimal!
+  amountInUSID: BigDecimal!
+  
+  # Post-swap state
+  reserveUSID: BigDecimal!
+  reserveToken: BigDecimal!
+  spotPrice: BigDecimal!
+  
+  # Fees
+  feeAmount: BigDecimal!
+  feeUSID: BigDecimal!
+}
+
+# Fee claim event
+type FeeClaim @entity {
+  id: ID!
+  nft: MarketNFT!
+  recipient: User!
+  amount: BigDecimal!
+  
+  # Transaction details
+  txHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+# NFT transfer event
+type NFTTransfer @entity {
+  id: ID!
+  nft: MarketNFT!
+  from: User!
+  to: User!
+  
+  # Transaction details
+  txHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+# Fee strategy change event
+type FeeStrategyChange @entity {
+  id: ID!
+  nft: MarketNFT!
+  oldStrategy: FeeStrategy!
+  newStrategy: FeeStrategy!
+  
+  # Transaction details
+  txHash: Bytes!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+}
+
+# Hourly market data for charts
+type MarketHourData @entity {
+  id: ID!
+  market: Market!
+  hourStartUnix: BigInt!
+  
+  # OHLC
+  open: BigDecimal!
+  high: BigDecimal!
+  low: BigDecimal!
+  close: BigDecimal!
+  
+  # Volume
+  volumeUSID: BigDecimal!
+  volumeToken: BigDecimal!
+  feesUSID: BigDecimal!
+  
+  # Reserves at end of hour
+  reserveUSID: BigDecimal!
+  reserveToken: BigDecimal!
+  
+  # Stats
+  swapCount: BigInt!
+}
+
+# Daily market data for charts
+type MarketDayData @entity {
+  id: ID!
+  market: Market!
+  dayStartUnix: BigInt!
+  
+  # OHLC
+  open: BigDecimal!
+  high: BigDecimal!
+  low: BigDecimal!
+  close: BigDecimal!
+  
+  # Volume
+  volumeUSID: BigDecimal!
+  volumeToken: BigDecimal!
+  feesUSID: BigDecimal!
+  
+  # Reserves at end of day
+  reserveUSID: BigDecimal!
+  reserveToken: BigDecimal!
+  
+  # Stats
+  swapCount: BigInt!
+}
+
+# Protocol daily data
+type ProtocolDayData @entity {
+  id: ID!
+  dayStartUnix: BigInt!
+  
+  # Volume
+  volumeUSID: BigDecimal!
+  feesUSID: BigDecimal!
+  
+  # Counts
+  swapCount: BigInt!
+  newMarkets: BigInt!
+  activeUsers: BigInt!
+  
+  # Cumulative
+  totalMarkets: BigInt!
+  totalVolumeUSID: BigDecimal!
+}
+
+# Transaction entity for general tracking
+type Transaction @entity {
+  id: ID!
+  blockNumber: BigInt!
+  timestamp: BigInt!
+  gasUsed: BigInt!
+  gasPrice: BigInt!
+}

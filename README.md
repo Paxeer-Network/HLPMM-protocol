@@ -2,7 +2,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.20-363636?logo=solidity)](https://soliditylang.org/)
-[![Tests](https://img.shields.io/badge/Tests-227%20passing-brightgreen)](./test)
+[![Tests](https://img.shields.io/badge/Tests-274%20passing-brightgreen)](./test)
 [![Paxeer Network](https://img.shields.io/badge/Network-Paxeer-purple)](https://paxeer.app)
 
 **[Website](https://paxeer.app)** | **[Explorer](https://paxscan.paxeer.app)** | **[Documentation](https://docs.hyperpaxeer.com)** | **[Sidiora](https://sidiora.hyperpaxeer.com)** | **[Twitter](https://x.com/paxeer_app)**
@@ -17,6 +17,7 @@ Hyper-Scaling Leveraged Product Market Maker (HLPMM) is a decentralized protocol
 - [Architecture](#architecture)
 - [Deployed Contracts](#deployed-contracts)
 - [Quick Start](#quick-start)
+- [Acquiring USID](#acquiring-usid)
 - [Creating Markets](#creating-markets)
 - [Trading](#trading)
 - [Fee System](#fee-system)
@@ -69,7 +70,8 @@ Periphery:
 |----------|-------------|
 | `HLPMMFactory` | Creates markets, deploys tokens and pools via CREATE2 |
 | `HLPMMPool` | AMM pool with swap logic and fee accumulation |
-| `USID` | Protocol stablecoin used as quote currency |
+| `USID` | Protocol stablecoin used as quote currency (PAX-backed) |
+| `PaxPriceOracle` | Fetches PAX/USD price from NativeCoinDEX |
 | `EventEmitter` | Centralized event logging for indexing |
 
 ### Token Contracts
@@ -93,13 +95,14 @@ Periphery:
 
 | Contract | Address |
 |----------|---------|
-| USID | `0x49345967360A401BF99840DAFC8E51148a5B7897` |
-| EventEmitter | `0xF5e3E9AB378223837c744419fc21420c5B108F67` |
-| MarketNFT | `0x10ea19646D0E2F773426B8bb45e09d2BCc322604` |
-| FeeCollector | `0xFc4C0e7086edA1c147E639D9AeCa29202023c124` |
-| Factory | `0x9E2952Aa4409cDb4c755891D5214c5239CDa99Fd` |
-| Quoter | `0x7A7F18701bB323F9A36243914B9ea40088957194` |
-| Router | `0x228A1b26Dc4B01EDe1c34A4bbEC1BB624Df5e4f6` |
+| PaxPriceOracle | `0xF94cD7F4b890A0BbeC1031C706fe2eFF293246A0` |
+| USID | `0x6C32c255EeBD6A72B56ee82454d7140020919652` |
+| EventEmitter | `0x83Fbd4b98fF5E42cbe2A2B51E6c658B8a8f142F6` |
+| MarketNFT | `0x68c92DD2cE0CB45F7Ed596DA4afbFAE69bd9Da08` |
+| FeeCollector | `0xB1fC5A4088E7Ff83C7bfF974b2C65f0d24c2Afa0` |
+| Factory | `0xEF283FF45379e2d47Ce8db0C613125072c1A1c58` |
+| Quoter | `0x1a97EE9Dc7d52aD4738ec2c9E857CdA262f3F60F` |
+| Router | `0xcA8005aCc73eb040fE91Ac7f145a5b6Db3F232Bb` |
 
 ## Quick Start
 
@@ -130,6 +133,45 @@ npx hardhat compile
 ```bash
 pnpm run test
 ```
+
+## Acquiring USID
+
+USID is the protocol stablecoin used for all trading pairs. Users can acquire USID by depositing native PAX tokens. The exchange rate is determined by the **PaxPriceOracle** which fetches real-time PAX/USD prices from the NativeCoinDEX.
+
+### Deposit PAX → Get USID
+
+```solidity
+const usid = new ethers.Contract(USID_ADDRESS, usidABI, signer);
+
+// Deposit 100 PAX to get USID (amount depends on PAX/USD price)
+const depositAmount = ethers.parseEther("100");
+const tx = await usid.deposit({ value: depositAmount });
+await tx.wait();
+
+// Or simply send PAX directly to the USID contract
+await signer.sendTransaction({
+    to: USID_ADDRESS,
+    value: depositAmount
+});
+```
+
+### Withdraw USID → Get PAX
+
+```solidity
+// Withdraw 50 USID to get PAX back
+const withdrawAmount = ethers.parseEther("50");
+await usid.withdraw(withdrawAmount);
+```
+
+### Exchange Rate Example
+
+| PAX Price | 100 PAX Deposit | 100 USID Withdrawal |
+|-----------|-----------------|---------------------|
+| $1.00 | 100 USID | 100 PAX |
+| $0.50 | 50 USID | 200 PAX |
+| $2.00 | 200 USID | 50 PAX |
+
+> **Note:** The exchange rate is determined at the time of deposit/withdrawal based on the current PAX/USD price from the oracle.
 
 ## Creating Markets
 
@@ -324,11 +366,12 @@ REPORT_GAS=true pnpm run test
 npx hardhat test test/core/HLPMMPool.test.js
 ```
 
-**Test Coverage:** 227 passing tests covering:
+**Test Coverage:** 274 passing tests covering:
 - Library functions (Math, PoolMath, FeeCalculator)
 - Core contracts (Factory, Pool, USID, EventEmitter)
 - Token contracts (HLPMMToken, MarketNFT)
-- Periphery contracts (Router, Quoter, FeeCollector)
+- Periphery contracts (Router, Quoter, FeeCollector, PaxPriceOracle)
+- USID deposit/withdraw with oracle integration
 - Integration tests (full market creation and swap flows)
 
 ## Contributing

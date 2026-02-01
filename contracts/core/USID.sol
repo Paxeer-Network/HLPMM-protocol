@@ -17,11 +17,21 @@ pragma solidity ^0.8.20;
 
 import "../interfaces/IUSID.sol";
 
+interface IPaxPriceOracle {
+    function getPaxPriceInUSD() external view returns (uint256);
+    function getUSIDForPAX(uint256 paxAmount) external view returns (uint256);
+    function getPAXForUSID(uint256 usidAmount) external view returns (uint256);
+}
+
 contract USID is IUSID {
     error Unauthorized();
     error FactoryAlreadySet();
+    error OracleAlreadySet();
     error InsufficientBalance();
     error InsufficientAllowance();
+    error WithdrawFailed();
+    error OracleNotSet();
+    error ZeroAmount();
 
     string public constant name = "USID Stablecoin";
     string public constant symbol = "USID";
@@ -29,6 +39,7 @@ contract USID is IUSID {
 
     uint256 public totalSupply;
     address public factory;
+    address public oracle;
     address private immutable _deployer;
 
     mapping(address => uint256) public balanceOf;
@@ -43,10 +54,54 @@ contract USID is IUSID {
         _deployer = msg.sender;
     }
 
+    receive() external payable {
+        deposit();
+    }
+
+    function deposit() public payable {
+        if (msg.value == 0) revert ZeroAmount();
+        if (oracle == address(0)) revert OracleNotSet();
+        
+        uint256 usidAmount = IPaxPriceOracle(oracle).getUSIDForPAX(msg.value);
+        if (usidAmount == 0) revert ZeroAmount();
+        
+        totalSupply += usidAmount;
+        balanceOf[msg.sender] += usidAmount;
+        
+        emit Deposit(msg.sender, msg.value, usidAmount);
+        emit Transfer(address(0), msg.sender, usidAmount);
+    }
+
+    function withdraw(uint256 usidAmount) external {
+        if (usidAmount == 0) revert ZeroAmount();
+        if (balanceOf[msg.sender] < usidAmount) revert InsufficientBalance();
+        if (oracle == address(0)) revert OracleNotSet();
+        
+        uint256 paxAmount = IPaxPriceOracle(oracle).getPAXForUSID(usidAmount);
+        if (paxAmount == 0) revert ZeroAmount();
+        if (paxAmount > address(this).balance) revert InsufficientBalance();
+        
+        balanceOf[msg.sender] -= usidAmount;
+        totalSupply -= usidAmount;
+        
+        emit Withdraw(msg.sender, usidAmount, paxAmount);
+        emit Transfer(msg.sender, address(0), usidAmount);
+        
+        (bool success, ) = msg.sender.call{value: paxAmount}("");
+        if (!success) revert WithdrawFailed();
+    }
+
     function setFactory(address factory_) external {
         if (msg.sender != _deployer) revert Unauthorized();
         if (factory != address(0)) revert FactoryAlreadySet();
         factory = factory_;
+    }
+
+    function setOracle(address oracle_) external {
+        if (msg.sender != _deployer) revert Unauthorized();
+        if (oracle != address(0)) revert OracleAlreadySet();
+        oracle = oracle_;
+        emit OracleSet(oracle_);
     }
 
     function mint(address to, uint256 amount) external onlyFactory {

@@ -18,7 +18,15 @@ pragma solidity ^0.8.20;
 import "./IERC20.sol";
 
 interface IUSID is IERC20 {
+    event Deposit(address indexed from, uint256 paxAmount, uint256 usidAmount);
+    event Withdraw(address indexed to, uint256 usidAmount, uint256 paxAmount);
+    event OracleSet(address indexed oracle);
+
     function factory() external view returns (address);
+    function oracle() external view returns (address);
     function mint(address to, uint256 amount) external;
     function burn(address from, uint256 amount) external;
+    function deposit() external payable;
+    function withdraw(uint256 amount) external;
+    function setOracle(address oracle_) external;
 }

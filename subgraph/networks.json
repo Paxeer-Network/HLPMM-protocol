@@ -1,20 +1,28 @@
 {
-  "paxeer": {
+  "paxeer-network": {
     "EventEmitter": {
-      "address": "0xF5e3E9AB378223837c744419fc21420c5B108F67",
-      "startBlock": 1
+      "address": "0x83Fbd4b98fF5E42cbe2A2B51E6c658B8a8f142F6",
+      "startBlock": 500000
     },
     "MarketNFT": {
-      "address": "0x10ea19646D0E2F773426B8bb45e09d2BCc322604",
-      "startBlock": 1
+      "address": "0x68c92DD2cE0CB45F7Ed596DA4afbFAE69bd9Da08",
+      "startBlock": 500000
     },
     "HLPMMFactory": {
-      "address": "0x9E2952Aa4409cDb4c755891D5214c5239CDa99Fd",
-      "startBlock": 1
+      "address": "0xEF283FF45379e2d47Ce8db0C613125072c1A1c58",
+      "startBlock": 500000
     },
     "USID": {
-      "address": "0x49345967360A401BF99840DAFC8E51148a5B7897",
-      "startBlock": 1
+      "address": "0x6C32c255EeBD6A72B56ee82454d7140020919652",
+      "startBlock": 500000
+    },
+    "FeeCollector": {
+      "address": "0xB1fC5A4088E7Ff83C7bfF974b2C65f0d24c2Afa0",
+      "startBlock": 500000
+    },
+    "PaxPriceOracle": {
+      "address": "0xF94cD7F4b890A0BbeC1031C706fe2eFF293246A0",
+      "startBlock": 500000
     }
   }
 }

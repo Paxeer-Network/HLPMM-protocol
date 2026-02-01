@@ -1,5 +1,8 @@
 const { ethers } = require("hardhat");
 
+// NativeCoinDEX address on Paxeer network - UPDATE THIS
+const NATIVE_COIN_DEX_ADDRESS = process.env.NATIVE_COIN_DEX_ADDRESS || "0x516c9D97C6be70062d8c2E8FF6A6454d33a970d1";
+
 async function main() {
   const signers = await ethers.getSigners();
   
@@ -12,6 +15,7 @@ async function main() {
   const [deployer] = signers;
   console.log("Deploying HLPMM Protocol with account:", deployer.address);
   console.log("Account balance:", (await ethers.provider.getBalance(deployer.address)).toString());
+  console.log("NativeCoinDEX address:", NATIVE_COIN_DEX_ADDRESS);
 
   const deployedAddresses = {};
 
@@ -20,7 +24,15 @@ async function main() {
   // ============================================
   console.log("\n--- Phase 1: Base Layer ---");
 
-  // 1. Deploy USID
+  // 1. Deploy PaxPriceOracle
+  console.log("Deploying PaxPriceOracle...");
+  const PaxPriceOracle = await ethers.getContractFactory("PaxPriceOracle");
+  const oracle = await PaxPriceOracle.deploy(NATIVE_COIN_DEX_ADDRESS);
+  await oracle.waitForDeployment();
+  deployedAddresses.oracle = await oracle.getAddress();
+  console.log("PaxPriceOracle deployed to:", deployedAddresses.oracle);
+
+  // 2. Deploy USID
   console.log("Deploying USID...");
   const USID = await ethers.getContractFactory("USID");
   const usid = await USID.deploy();
@@ -81,6 +93,11 @@ async function main() {
   await usidContract.setFactory(deployedAddresses.factory);
   console.log("USID factory set");
 
+  // Set oracle on USID
+  console.log("Setting oracle on USID...");
+  await usidContract.setOracle(deployedAddresses.oracle);
+  console.log("USID oracle set");
+
   // Set factory on EventEmitter
   console.log("Setting factory on EventEmitter...");
   const eventEmitterContract = await ethers.getContractAt("EventEmitter", deployedAddresses.eventEmitter);
@@ -136,6 +153,7 @@ async function main() {
   console.log("========================================\n");
   console.log("Deployed Addresses:");
   console.log("-------------------");
+  console.log("PaxPriceOracle:", deployedAddresses.oracle);
   console.log("USID:          ", deployedAddresses.usid);
   console.log("EventEmitter:  ", deployedAddresses.eventEmitter);
   console.log("MarketNFT:     ", deployedAddresses.marketNFT);
