@@ -106,8 +106,8 @@ Periphery:
 ### Installation
 
 ```bash
-git clone https://github.com/paxlabs/hlpmm-protocol.git
-cd hlpmm-protocol
+git clone https://github.com/Paxeer-Network/HLPMM-protocol.git
+cd HLPMM-protocol
 pnpm install
 ```
 

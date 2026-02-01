@@ -46,7 +46,7 @@ This project adheres to a code of conduct. By participating, you are expected to
 
 ```bash
 # Clone the repository
-git clone https://github.com/paxeer-network/hlpmm-protocol.git
+git clone https://github.com/Paxeer-Network/HLPMM-protocol.git
 cd hlpmm-protocol
 
 # Install dependencies

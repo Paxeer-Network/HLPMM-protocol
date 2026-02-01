@@ -5,7 +5,7 @@
   "main": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paxee-network/hlpmm.git"
+    "url": "https://github.com/Paxeer-Network/HLPMM-protocol.git"
   },
   "scripts": {
     "compile": "hardhat compile",

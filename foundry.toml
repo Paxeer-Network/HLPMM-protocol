@@ -134,7 +134,7 @@ invariant = { runs = 10000, depth = 100 }
 [doc]
 out = "docs"
 title = "Paxeer Markets"
-repository = "https://github.com/paxeer/smart-contracts"
+repository = "https://github.com/Paxeer-Network/HLPMM-protocol.git"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # FORMAT
