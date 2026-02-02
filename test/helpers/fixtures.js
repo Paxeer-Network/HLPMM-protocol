@@ -3,21 +3,21 @@ const { ethers } = require("hardhat");
 async function deployProtocolFixture() {
   const [deployer, creator, user1, user2, user3] = await ethers.getSigners();
 
-  // Phase 1: Base Layer - Deploy Oracle
+  // Phase 1: Base Layer - Deploy USID first (needed for PaxPriceOracle)
+  const USID = await ethers.getContractFactory("USID");
+  const usid = await USID.deploy();
+  await usid.waitForDeployment();
+
   const MockDEX = await ethers.getContractFactory("MockNativeCoinDEX");
   const mockDEX = await MockDEX.deploy();
   await mockDEX.waitForDeployment();
 
-  const PaxPriceOracle = await ethers.getContractFactory("PaxPriceOracle");
-  const oracle = await PaxPriceOracle.deploy(await mockDEX.getAddress());
-  await oracle.waitForDeployment();
-
   // Set default price to $1
   await mockDEX.setPrice(ethers.parseEther("1"));
 
-  const USID = await ethers.getContractFactory("USID");
-  const usid = await USID.deploy();
-  await usid.waitForDeployment();
+  const PaxPriceOracle = await ethers.getContractFactory("PaxPriceOracle");
+  const oracle = await PaxPriceOracle.deploy(await mockDEX.getAddress(), await usid.getAddress());
+  await oracle.waitForDeployment();
 
   const EventEmitter = await ethers.getContractFactory("EventEmitter");
   const eventEmitter = await EventEmitter.deploy();

@@ -1,6 +1,6 @@
 import { BigInt, Address } from "@graphprotocol/graph-ts";
 import { Transfer } from "../generated/templates/HLPMMToken/ERC20";
-import { Token, User, UserTokenBalance } from "../generated/schema";
+import { Token, User, UserTokenBalance, Market } from "../generated/schema";
 import { convertToDecimal, getOrCreateUser, ZERO_BD, ONE_BI } from "./helpers";
 
 export function handleTokenTransfer(event: Transfer): void {
@@ -59,4 +59,13 @@ export function handleTokenTransfer(event: Transfer): void {
   }
   
   token.save();
+  
+  // Sync Market holderCount with Token holderCount
+  if (token.market) {
+    let market = Market.load(token.market!);
+    if (market) {
+      market.holderCount = token.holderCount;
+      market.save();
+    }
+  }
 }

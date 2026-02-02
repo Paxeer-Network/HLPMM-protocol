@@ -1,6 +1,6 @@
 import { BigInt, Address } from "@graphprotocol/graph-ts";
 import { Sync } from "../generated/templates/HLPMMPool/HLPMMPool";
-import { Market } from "../generated/schema";
+import { Market, Token } from "../generated/schema";
 import { convertToDecimal, ZERO_BD } from "./helpers";
 
 export function handleSync(event: Sync): void {
@@ -17,7 +17,12 @@ export function handleSync(event: Sync): void {
     market.spotPrice = reserveUSID.div(reserveToken);
   }
   
-  market.marketCap = reserveUSID;
+  // Calculate marketCap as spotPrice × totalSupply
+  let token = Token.load(market.token);
+  if (token) {
+    market.marketCap = market.spotPrice.times(token.totalSupply);
+  }
+  
   market.updatedAt = event.block.timestamp;
   market.save();
 }

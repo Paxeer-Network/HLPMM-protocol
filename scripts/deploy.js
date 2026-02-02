@@ -24,21 +24,21 @@ async function main() {
   // ============================================
   console.log("\n--- Phase 1: Base Layer ---");
 
-  // 1. Deploy PaxPriceOracle
-  console.log("Deploying PaxPriceOracle...");
-  const PaxPriceOracle = await ethers.getContractFactory("PaxPriceOracle");
-  const oracle = await PaxPriceOracle.deploy(NATIVE_COIN_DEX_ADDRESS);
-  await oracle.waitForDeployment();
-  deployedAddresses.oracle = await oracle.getAddress();
-  console.log("PaxPriceOracle deployed to:", deployedAddresses.oracle);
-
-  // 2. Deploy USID
+  // 1. Deploy USID first (needed for PaxPriceOracle)
   console.log("Deploying USID...");
   const USID = await ethers.getContractFactory("USID");
   const usid = await USID.deploy();
   await usid.waitForDeployment();
   deployedAddresses.usid = await usid.getAddress();
   console.log("USID deployed to:", deployedAddresses.usid);
+
+  // 2. Deploy PaxPriceOracle (needs USID address for getSpotPrice calls)
+  console.log("Deploying PaxPriceOracle...");
+  const PaxPriceOracle = await ethers.getContractFactory("PaxPriceOracle");
+  const oracle = await PaxPriceOracle.deploy(NATIVE_COIN_DEX_ADDRESS, deployedAddresses.usid);
+  await oracle.waitForDeployment();
+  deployedAddresses.oracle = await oracle.getAddress();
+  console.log("PaxPriceOracle deployed to:", deployedAddresses.oracle);
 
   // 2. Deploy EventEmitter
   console.log("Deploying EventEmitter...");

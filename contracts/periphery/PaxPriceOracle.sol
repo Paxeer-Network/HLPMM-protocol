@@ -2,7 +2,6 @@
 pragma solidity ^0.8.20;
 
 interface INativeCoinDEX {
-    function getCurrentPrice() external view returns (uint256);
     function getSpotPrice(address stable) external view returns (uint256);
     function reservePAX() external view returns (uint256);
     function stablecoins(address) external view returns (bool isSupported, uint8 decimals, uint256 reserve);
@@ -21,6 +20,7 @@ contract PaxPriceOracle is IPaxPriceOracle {
     uint256 public constant PRICE_DECIMALS = 18;
     
     address public immutable nativeCoinDEX;
+    address public immutable stableAddress;
     address public immutable owner;
     
     uint256 public fallbackPrice = 1e18; // Default 1 PAX = 1 USD if DEX unavailable
@@ -34,8 +34,9 @@ contract PaxPriceOracle is IPaxPriceOracle {
         _;
     }
 
-    constructor(address _nativeCoinDEX) {
+    constructor(address _nativeCoinDEX, address _stableAddress) {
         nativeCoinDEX = _nativeCoinDEX;
+        stableAddress = _stableAddress;
         owner = msg.sender;
     }
 
@@ -44,7 +45,7 @@ contract PaxPriceOracle is IPaxPriceOracle {
             return fallbackPrice;
         }
 
-        try INativeCoinDEX(nativeCoinDEX).getCurrentPrice() returns (uint256 price) {
+        try INativeCoinDEX(nativeCoinDEX).getSpotPrice(stableAddress) returns (uint256 price) {
             if (price == 0) return fallbackPrice;
             return price;
         } catch {

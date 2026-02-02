@@ -7,27 +7,37 @@ describe("PaxPriceOracle", function () {
   async function deployOracleFixture() {
     const [deployer, user1, user2] = await ethers.getSigners();
     
+    // Deploy mock USID for stableAddress parameter
+    const USID = await ethers.getContractFactory("USID");
+    const usid = await USID.deploy();
+    await usid.waitForDeployment();
+
     // Deploy mock NativeCoinDEX
     const MockDEX = await ethers.getContractFactory("MockNativeCoinDEX");
     const mockDEX = await MockDEX.deploy();
     await mockDEX.waitForDeployment();
 
-    // Deploy PaxPriceOracle
+    // Deploy PaxPriceOracle with DEX and stable address
     const PaxPriceOracle = await ethers.getContractFactory("PaxPriceOracle");
-    const oracle = await PaxPriceOracle.deploy(await mockDEX.getAddress());
+    const oracle = await PaxPriceOracle.deploy(await mockDEX.getAddress(), await usid.getAddress());
     await oracle.waitForDeployment();
 
-    return { oracle, mockDEX, deployer, user1, user2 };
+    return { oracle, mockDEX, usid, deployer, user1, user2 };
   }
 
   async function deployOracleWithZeroAddressFixture() {
     const [deployer, user1] = await ethers.getSigners();
     
+    // Deploy mock USID for stableAddress parameter
+    const USID = await ethers.getContractFactory("USID");
+    const usid = await USID.deploy();
+    await usid.waitForDeployment();
+
     const PaxPriceOracle = await ethers.getContractFactory("PaxPriceOracle");
-    const oracle = await PaxPriceOracle.deploy(ZERO_ADDRESS);
+    const oracle = await PaxPriceOracle.deploy(ZERO_ADDRESS, await usid.getAddress());
     await oracle.waitForDeployment();
 
-    return { oracle, deployer, user1 };
+    return { oracle, usid, deployer, user1 };
   }
 
   describe("Deployment", function () {

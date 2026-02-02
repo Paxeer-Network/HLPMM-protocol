@@ -13,7 +13,7 @@ export let ONE_BI = BigInt.fromI32(1);
 export let ZERO_BD = BigDecimal.fromString("0");
 export let ONE_BD = BigDecimal.fromString("1");
 
-export let USID_ADDRESS = "0x49345967360a401bf99840dafc8e51148a5b7897";
+export let USID_ADDRESS = "0x6c32c255eebd6a72b56ee82454d7140020919652";
 export let FACTORY_ADDRESS = "0x9e2952aa4409cdb4c755891d5214c5239cda99fd";
 export let MARKET_NFT_ADDRESS = "0x10ea19646d0e2f773426b8bb45e09d2bcc322604";
 
@@ -57,6 +57,7 @@ export function getOrCreateUser(address: Address, timestamp: BigInt): User {
     user.marketsCreated = ZERO_BI;
     user.firstSeenAt = timestamp;
     user.lastSeenAt = timestamp;
+    user.save();
     
     // Update protocol user count
     let protocol = getOrCreateProtocol();
@@ -79,6 +80,7 @@ export function updateMarketHourData(
   timestamp: BigInt,
   price: BigDecimal,
   volumeUSID: BigDecimal,
+  volumeTokenInUSID: BigDecimal,
   feesUSID: BigDecimal
 ): MarketHourData {
   let hourIndex = timestamp.toI32() / 3600;
@@ -90,9 +92,16 @@ export function updateMarketHourData(
     hourData = new MarketHourData(hourId);
     hourData.market = market.id;
     hourData.hourStartUnix = BigInt.fromI32(hourStartUnix);
-    hourData.open = price;
-    hourData.high = price;
-    hourData.low = price;
+    
+    // Gap-free: open at previous candle's close price
+    let prevHourIndex = hourIndex - 1;
+    let prevHourId = market.id + "-" + prevHourIndex.toString();
+    let prevHourData = MarketHourData.load(prevHourId);
+    let openPrice = prevHourData ? prevHourData.close : price;
+    
+    hourData.open = openPrice;
+    hourData.high = openPrice.gt(price) ? openPrice : price;
+    hourData.low = openPrice.lt(price) ? openPrice : price;
     hourData.close = price;
     hourData.volumeUSID = ZERO_BD;
     hourData.volumeToken = ZERO_BD;
@@ -110,6 +119,7 @@ export function updateMarketHourData(
   }
   hourData.close = price;
   hourData.volumeUSID = hourData.volumeUSID.plus(volumeUSID);
+  hourData.volumeToken = hourData.volumeToken.plus(volumeTokenInUSID);
   hourData.feesUSID = hourData.feesUSID.plus(feesUSID);
   hourData.reserveUSID = market.reserveUSID;
   hourData.reserveToken = market.reserveToken;
@@ -124,6 +134,7 @@ export function updateMarketDayData(
   timestamp: BigInt,
   price: BigDecimal,
   volumeUSID: BigDecimal,
+  volumeTokenInUSID: BigDecimal,
   feesUSID: BigDecimal
 ): MarketDayData {
   let dayIndex = timestamp.toI32() / 86400;
@@ -135,9 +146,16 @@ export function updateMarketDayData(
     dayData = new MarketDayData(dayId);
     dayData.market = market.id;
     dayData.dayStartUnix = BigInt.fromI32(dayStartUnix);
-    dayData.open = price;
-    dayData.high = price;
-    dayData.low = price;
+    
+    // Gap-free: open at previous candle's close price
+    let prevDayIndex = dayIndex - 1;
+    let prevDayId = market.id + "-" + prevDayIndex.toString();
+    let prevDayData = MarketDayData.load(prevDayId);
+    let openPrice = prevDayData ? prevDayData.close : price;
+    
+    dayData.open = openPrice;
+    dayData.high = openPrice.gt(price) ? openPrice : price;
+    dayData.low = openPrice.lt(price) ? openPrice : price;
     dayData.close = price;
     dayData.volumeUSID = ZERO_BD;
     dayData.volumeToken = ZERO_BD;
@@ -155,6 +173,7 @@ export function updateMarketDayData(
   }
   dayData.close = price;
   dayData.volumeUSID = dayData.volumeUSID.plus(volumeUSID);
+  dayData.volumeToken = dayData.volumeToken.plus(volumeTokenInUSID);
   dayData.feesUSID = dayData.feesUSID.plus(feesUSID);
   dayData.reserveUSID = market.reserveUSID;
   dayData.reserveToken = market.reserveToken;

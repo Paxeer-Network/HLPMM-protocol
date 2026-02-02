@@ -9,7 +9,7 @@
 
 ---
 
-Hyper-Scaling Leveraged Product Market Maker (HLPMM) is a decentralized protocol for creating and trading tokenized markets with automated market making, dynamic fee calculation, and NFT-based fee ownership rights.
+**HLPMM** (Hyper-Scaling Leveraged Product Market Maker) is a next-generation decentralized exchange primitive that fundamentally reimagines how tokenized markets are created, bootstrapped, and governed on-chain. By fusing permissionless market instantiation, adaptive fee mechanics, and NFT-native revenue rights into a single atomic operation, HLPMM eliminates the fragmentation and capital inefficiency that plagues traditional DEX architectures.
 
 ## Table of Contents
 
@@ -30,81 +30,86 @@ Hyper-Scaling Leveraged Product Market Maker (HLPMM) is a decentralized protocol
 
 ## Overview
 
-HLPMM enables permissionless market creation where anyone can launch a new token market with a single transaction. Each market consists of:
+HLPMM introduces a **zero-friction market genesis model**: any participant can deploy a fully operational token market in a single transaction, with no seed capital requirements, no whitelisting, and no external dependencies. The protocol handles token deployment, liquidity seeding, and governance allocation atomically via CREATE2 deterministic addressing.
 
-- A newly deployed ERC20 token (1 billion initial supply)
-- An AMM pool paired with USID stablecoin (10,000 USID initial liquidity)
-- An NFT representing fee ownership rights for that market
+Each market instantiation produces three interlocking primitives:
 
-The protocol uses a constant product formula (x * y = k) with dynamic fees that adjust based on pool age, volatility, and token concentration.
+- **ERC20 Token** — 1B supply, deterministically deployed and immediately tradeable
+- **AMM Pool** — Pre-seeded with 10,000 USID base liquidity, enabling instant price discovery
+- **Fee Ownership NFT** — ERC721 representing perpetual claim on trading fees, transferable and composable
+
+The underlying AMM employs a **constant product invariant** (x · y = k) augmented with a proprietary **multi-factor dynamic fee engine** that modulates swap costs based on pool maturity, realized volatility, and holder concentration metrics. This creates a self-balancing fee surface that protects nascent markets while rewarding mature, liquid pools with tighter spreads.
 
 ## Architecture
 
-```
-+------------------+     +------------------+     +------------------+
-|   HLPMMFactory   |---->|    HLPMMPool     |---->|   HLPMMToken     |
-|                  |     |                  |     |   (ERC20)        |
-+------------------+     +------------------+     +------------------+
-        |                        |
-        v                        v
-+------------------+     +------------------+
-|    MarketNFT     |     |   FeeCollector   |
-|    (ERC721)      |     |                  |
-+------------------+     +------------------+
-        |
-        v
-+------------------+     +------------------+
-|  EventEmitter    |     |      USID        |
-|                  |     |   (Stablecoin)   |
-+------------------+     +------------------+
+The protocol stack is organized into three tiers: a **Core Layer** handling market genesis and AMM logic, a **Token Layer** managing asset representation and ownership rights, and a **Periphery Layer** providing user-facing execution and query interfaces.
 
-Periphery:
-+------------------+     +------------------+
-|   HLPMMRouter    |     |   HLPMMQuoter    |
-+------------------+     +------------------+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              CORE LAYER                                     │
+│  ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐        │
+│  │   HLPMMFactory   │──▶│    HLPMMPool     │──▶│   HLPMMToken     │        │
+│  │   (CREATE2)      │   │   (AMM Engine)   │   │   (ERC20)        │        │
+│  └────────┬─────────┘   └────────┬─────────┘   └──────────────────┘        │
+│           │                      │                                          │
+│           ▼                      ▼                                          │
+│  ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐        │
+│  │    MarketNFT     │   │   FeeCollector   │   │  EventEmitter    │        │
+│  │   (Fee Rights)   │   │ (Revenue Engine) │   │  (Index Layer)   │        │
+│  └──────────────────┘   └──────────────────┘   └──────────────────┘        │
+└─────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           PERIPHERY LAYER                                   │
+│  ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐        │
+│  │   HLPMMRouter    │   │   HLPMMQuoter    │   │      USID        │        │
+│  │  (Execution)     │   │   (Simulation)   │   │  (Base Asset)    │        │
+│  └──────────────────┘   └──────────────────┘   └──────────────────┘        │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Core Contracts
 
-| Contract | Description |
-|----------|-------------|
-| `HLPMMFactory` | Creates markets, deploys tokens and pools via CREATE2 |
-| `HLPMMPool` | AMM pool with swap logic and fee accumulation |
-| `USID` | Protocol stablecoin used as quote currency (PAX-backed) |
-| `PaxPriceOracle` | Fetches PAX/USD price from NativeCoinDEX |
-| `EventEmitter` | Centralized event logging for indexing |
+| Contract | Role |
+|----------|------|
+| `HLPMMFactory` | Market genesis engine — deploys token/pool pairs via CREATE2 with deterministic addressing for front-runnable discovery |
+| `HLPMMPool` | AMM execution layer implementing constant product invariant with integrated fee accumulation and multi-strategy distribution |
+| `USID` | Native stablecoin serving as universal quote currency, backed 1:1 by PAX with oracle-driven minting/redemption |
+| `PaxPriceOracle` | Price feed aggregator sourcing PAX/USD rates from NativeCoinDEX liquidity pools |
+| `EventEmitter` | Canonical event bus enabling efficient off-chain indexing and subgraph construction |
 
 ### Token Contracts
 
-| Contract | Description |
-|----------|-------------|
-| `HLPMMToken` | ERC20 token deployed for each market |
-| `MarketNFT` | ERC721 representing fee ownership per market |
+| Contract | Role |
+|----------|------|
+| `HLPMMToken` | Minimal ERC20 implementation optimized for gas-efficient deployment and transfer operations |
+| `MarketNFT` | ERC721 encoding perpetual fee ownership rights with on-chain strategy configuration |
 
 ### Periphery Contracts
 
-| Contract | Description |
-|----------|-------------|
-| `HLPMMRouter` | Handles swaps with deadline protection |
-| `HLPMMQuoter` | Read-only quotes and pool information |
-| `FeeCollector` | Accumulates and distributes trading fees |
+| Contract | Role |
+|----------|------|
+| `HLPMMRouter` | User-facing swap interface with deadline protection, slippage guards, and multi-hop routing |
+| `HLPMMQuoter` | Pure view functions for swap simulation, price impact analysis, and pool introspection |
+| `FeeCollector` | Revenue accumulator supporting four distribution strategies: claim, burn, airdrop, and LP reinvestment |
 
 ## Deployed Contracts
 
-**Network: Paxeer (Chain ID: 125)**
+**Live on Paxeer Mainnet** (Chain ID: `125`)
 
-| Contract | Address |
-|----------|---------|
-| PaxPriceOracle | `0xF94cD7F4b890A0BbeC1031C706fe2eFF293246A0` |
-| USID | `0x6C32c255EeBD6A72B56ee82454d7140020919652` |
-| EventEmitter | `0x83Fbd4b98fF5E42cbe2A2B51E6c658B8a8f142F6` |
-| MarketNFT | `0x68c92DD2cE0CB45F7Ed596DA4afbFAE69bd9Da08` |
-| FeeCollector | `0xB1fC5A4088E7Ff83C7bfF974b2C65f0d24c2Afa0` |
-| Factory | `0xEF283FF45379e2d47Ce8db0C613125072c1A1c58` |
-| Quoter | `0x1a97EE9Dc7d52aD4738ec2c9E857CdA262f3F60F` |
-| Router | `0xcA8005aCc73eb040fE91Ac7f145a5b6Db3F232Bb` |
+| Contract | Address | Verification |
+|----------|---------|--------------|
+| PaxPriceOracle | `0xF94cD7F4b890A0BbeC1031C706fe2eFF293246A0` | [View](https://paxscan.paxeer.app/address/0xF94cD7F4b890A0BbeC1031C706fe2eFF293246A0) |
+| USID | `0x6C32c255EeBD6A72B56ee82454d7140020919652` | [View](https://paxscan.paxeer.app/address/0x6C32c255EeBD6A72B56ee82454d7140020919652) |
+| EventEmitter | `0x83Fbd4b98fF5E42cbe2A2B51E6c658B8a8f142F6` | [View](https://paxscan.paxeer.app/address/0x83Fbd4b98fF5E42cbe2A2B51E6c658B8a8f142F6) |
+| MarketNFT | `0x68c92DD2cE0CB45F7Ed596DA4afbFAE69bd9Da08` | [View](https://paxscan.paxeer.app/address/0x68c92DD2cE0CB45F7Ed596DA4afbFAE69bd9Da08) |
+| FeeCollector | `0xB1fC5A4088E7Ff83C7bfF974b2C65f0d24c2Afa0` | [View](https://paxscan.paxeer.app/address/0xB1fC5A4088E7Ff83C7bfF974b2C65f0d24c2Afa0) |
+| Factory | `0xEF283FF45379e2d47Ce8db0C613125072c1A1c58` | [View](https://paxscan.paxeer.app/address/0xEF283FF45379e2d47Ce8db0C613125072c1A1c58) |
+| Quoter | `0x1a97EE9Dc7d52aD4738ec2c9E857CdA262f3F60F` | [View](https://paxscan.paxeer.app/address/0x1a97EE9Dc7d52aD4738ec2c9E857CdA262f3F60F) |
+| Router | `0xcA8005aCc73eb040fE91Ac7f145a5b6Db3F232Bb` | [View](https://paxscan.paxeer.app/address/0xcA8005aCc73eb040fE91Ac7f145a5b6Db3F232Bb) |
 
 ## Quick Start
+
+Get a local development environment running in under 60 seconds.
 
 ### Installation
 
@@ -116,127 +121,144 @@ pnpm install
 
 ### Configuration
 
-Create a `.env` file:
-
 ```bash
-PRIVATE_KEY=your_private_key_here
+cp .example.env .env
+# Edit .env with your credentials
 ```
 
-### Compile Contracts
+Required environment variables:
 
 ```bash
-npx hardhat compile
+PRIVATE_KEY=0x...               # Deployer private key
+PAXEER_RPC_URL=https://...      # Network RPC endpoint (optional, defaults to public)
 ```
 
-### Run Tests
+### Compile & Verify
 
 ```bash
-pnpm run test
+npx hardhat compile              # Compile all contracts
+npx hardhat test                 # Run full test suite (274 tests)
+REPORT_GAS=true pnpm test        # Include gas consumption metrics
 ```
 
 ## Acquiring USID
 
-USID is the protocol stablecoin used for all trading pairs. Users can acquire USID by depositing native PAX tokens. The exchange rate is determined by the **PaxPriceOracle** which fetches real-time PAX/USD prices from the NativeCoinDEX.
+**USID** is the protocol's native stablecoin and serves as the universal quote asset for all HLPMM markets. It maintains a 1:1 USD peg through a fully collateralized design backed by PAX, with real-time oracle pricing ensuring accurate mint/redeem ratios.
 
-### Deposit PAX → Get USID
+### Minting USID (PAX → USID)
 
-```solidity
+```javascript
 const usid = new ethers.Contract(USID_ADDRESS, usidABI, signer);
 
-// Deposit 100 PAX to get USID (amount depends on PAX/USD price)
+// Deposit native PAX to mint USID at oracle rate
 const depositAmount = ethers.parseEther("100");
-const tx = await usid.deposit({ value: depositAmount });
-await tx.wait();
+await usid.deposit({ value: depositAmount });
 
-// Or simply send PAX directly to the USID contract
+// Alternative: Direct transfer triggers automatic minting
 await signer.sendTransaction({
     to: USID_ADDRESS,
     value: depositAmount
 });
 ```
 
-### Withdraw USID → Get PAX
+### Redeeming USID (USID → PAX)
 
-```solidity
-// Withdraw 50 USID to get PAX back
-const withdrawAmount = ethers.parseEther("50");
-await usid.withdraw(withdrawAmount);
+```javascript
+// Burn USID to receive PAX at current oracle rate
+const redeemAmount = ethers.parseEther("50");
+await usid.withdraw(redeemAmount);
 ```
 
-### Exchange Rate Example
+### Oracle-Driven Exchange Rates
 
-| PAX Price | 100 PAX Deposit | 100 USID Withdrawal |
-|-----------|-----------------|---------------------|
+The `PaxPriceOracle` sources live PAX/USD pricing from NativeCoinDEX liquidity pools, ensuring accurate conversion at all times:
+
+| PAX/USD Rate | 100 PAX Mints | 100 USID Redeems |
+|--------------|---------------|------------------|
 | $1.00 | 100 USID | 100 PAX |
 | $0.50 | 50 USID | 200 PAX |
 | $2.00 | 200 USID | 50 PAX |
 
-> **Note:** The exchange rate is determined at the time of deposit/withdrawal based on the current PAX/USD price from the oracle.
+> **Atomic Settlement**: All mint/redeem operations settle in a single transaction with no slippage—the oracle rate at block inclusion determines the exact conversion.
 
 ## Creating Markets
 
-Markets are created through the `HLPMMFactory` contract. Each market creation:
+The `HLPMMFactory` executes a complete market bootstrap in a single atomic transaction. No external liquidity provision required—the protocol handles everything:
 
-1. Deploys a new ERC20 token via CREATE2
-2. Deploys a new AMM pool
-3. Mints 10,000 USID to the pool
-4. Mints 1 billion tokens to the pool
-5. Mints an NFT to the creator representing fee rights
+**Atomic Market Genesis:**
+1. **Token Deployment** — ERC20 instantiated via CREATE2 (deterministic address, predictable before tx)
+2. **Pool Deployment** — AMM contract initialized with token pairing
+3. **Liquidity Seeding** — 10,000 USID + 1B tokens minted directly to pool reserves
+4. **Fee Rights Issuance** — ERC721 minted to creator, encoding perpetual revenue claim
 
-### Create Market Example
+### Launch a New Market
 
-```solidity
-// Using ethers.js
+```javascript
 const factory = new ethers.Contract(FACTORY_ADDRESS, factoryABI, signer);
 
-// FeeStrategy: 0 = CLAIM, 1 = BURN, 2 = AIRDROP, 3 = LP_REWARDS
+// Fee distribution strategy (configurable post-launch)
+// 0 = CLAIM (withdraw to wallet)
+// 1 = BURN (deflationary)
+// 2 = AIRDROP (community distribution)
+// 3 = LP_REWARDS (liquidity incentives)
+
 const tx = await factory.createMarket(
-    "My Token",           // name
-    "MTK",                // symbol
-    0                     // initialStrategy (CLAIM)
+    "Hyperdrive Token",    // Token name
+    "HYPR",                // Symbol
+    0                      // Initial fee strategy
 );
 
 const receipt = await tx.wait();
-// Parse MarketCreated event to get pool and token addresses
+const event = receipt.logs.find(log => log.fragment?.name === 'MarketCreated');
+const { pool, token, nftId } = event.args;
 ```
 
-### Get Market Information
+### Query Market State
 
-```solidity
+```javascript
 const quoter = new ethers.Contract(QUOTER_ADDRESS, quoterABI, provider);
 
-const poolInfo = await quoter.getPoolInfo(tokenAddress);
-// Returns: reserveUSID, reserveToken, spotPrice, marketCap, poolAge
+const {
+    reserveUSID,    // Base liquidity depth
+    reserveToken,   // Token reserve balance
+    spotPrice,      // Current marginal price (18 decimals)
+    marketCap,      // Fully diluted valuation in USID
+    poolAge         // Seconds since pool creation
+} = await quoter.getPoolInfo(tokenAddress);
 ```
 
 ## Trading
 
-### Direct Swap via Router
+The `HLPMMRouter` provides a hardened execution layer with MEV protection, deadline enforcement, and slippage guards. All swaps route through USID as the intermediate asset, enabling cross-market arbitrage with minimal hops.
 
-```solidity
+### Single-Hop Swap
+
+```javascript
 const router = new ethers.Contract(ROUTER_ADDRESS, routerABI, signer);
 
-// Approve router to spend tokens
+// Grant router spend authorization
 await token.approve(ROUTER_ADDRESS, amountIn);
 
-// Swap exact tokens for tokens
-const deadline = Math.floor(Date.now() / 1000) + 600; // 10 minutes
+// Execute swap with MEV protection
+const deadline = Math.floor(Date.now() / 1000) + 600; // 10-minute validity window
 
 const amountOut = await router.swapExactTokensForTokens(
-    amountIn,           // amount of tokenIn
-    amountOutMin,       // minimum output (slippage protection)
-    tokenIn,            // input token address
-    tokenOut,           // output token address (USID or market token)
-    recipient,          // recipient address
-    deadline            // transaction deadline
+    amountIn,        // Exact input quantity
+    amountOutMin,    // Minimum acceptable output (slippage bound)
+    tokenIn,         // Source asset
+    tokenOut,        // Destination asset (USID or any market token)
+    recipient,       // Output recipient
+    deadline         // Block timestamp ceiling
 );
 ```
 
-### Multi-Hop Swap
+### Multi-Hop Routing
 
-```solidity
-// Swap TokenA -> USID -> TokenB
-const path = [tokenA, usidAddress, tokenB];
+Execute cross-market swaps in a single transaction—optimal for token-to-token trades without manual USID conversion:
+
+```javascript
+// Route: TokenA → USID → TokenB (2 hops, 1 transaction)
+const path = [tokenA, USID_ADDRESS, tokenB];
 
 const amountOut = await router.swapExactTokensForTokensMultiHop(
     amountIn,
@@ -247,168 +269,185 @@ const amountOut = await router.swapExactTokensForTokensMultiHop(
 );
 ```
 
-### Get Quote Before Swap
+### Pre-Trade Simulation
 
-```solidity
+The `HLPMMQuoter` enables gas-free swap simulation for UI integration and algorithmic trading:
+
+```javascript
 const quoter = new ethers.Contract(QUOTER_ADDRESS, quoterABI, provider);
 
-// Get expected output amount
+// Simulate swap execution (pure view, no gas cost)
 const [amountOut, priceImpact] = await quoter.quoteExactInput(
     amountIn,
     tokenIn,
     tokenOut
 );
 
-// Check if price impact is acceptable
-if (priceImpact > 500) { // 5%
-    console.log("High price impact, consider smaller trade");
+// Price impact returned in basis points (500 = 5%)
+if (priceImpact > 500) {
+    console.warn("Significant price impact detected—consider splitting order");
 }
 ```
 
 ## Fee System
 
+HLPMM implements a **multi-factor adaptive fee model** that dynamically adjusts swap costs based on real-time market conditions. This creates an anti-fragile fee surface: nascent markets are protected from manipulation while mature pools benefit from competitive spreads.
+
 ### Dynamic Fee Calculation
 
-Fees are calculated dynamically based on:
+The fee engine evaluates four on-chain factors per swap:
 
-| Factor | Modifier Range | Description |
-|--------|----------------|-------------|
-| Base Fee | 30 bps | Standard 0.30% fee |
-| Pool Age | 0-50 bps | Higher fees for new pools |
-| Volatility | 0-100 bps | Higher fees during volatile periods |
-| Concentration | -10 to +75 bps | Adjusts based on holder distribution |
+| Factor | Range | Mechanism |
+|--------|-------|-----------|
+| **Base Fee** | 30 bps | Baseline swap cost (0.30%) |
+| **Pool Maturity** | 0–50 bps | Decay function—new pools pay premium, mature pools converge to base |
+| **Realized Volatility** | 0–100 bps | Rolling window vol calculation triggers fee escalation during turbulence |
+| **Holder Concentration** | -10 to +75 bps | Gini-coefficient-inspired adjustment penalizing whale-dominated markets |
 
-**Fee Bounds:** Minimum 10 bps (0.10%), Maximum 300 bps (3.00%)
+**Bounded Range:** Fees are hard-capped between **10 bps** (0.10%) and **300 bps** (3.00%) to ensure competitiveness while preventing manipulation.
 
-### Fee Strategies
+### Fee Distribution Strategies
 
-NFT owners can choose how accumulated fees are handled:
+The `MarketNFT` holder controls how accumulated fees flow. Strategy selection is on-chain and can be modified at any time:
 
-| Strategy | Value | Description |
-|----------|-------|-------------|
-| CLAIM | 0 | Direct withdrawal to wallet |
-| BURN | 1 | Burn USID permanently |
-| AIRDROP | 2 | Accumulate for community distribution |
-| LP_REWARDS | 3 | Redistribute to pool liquidity |
+| Strategy | Enum | Behavior |
+|----------|------|----------|
+| **CLAIM** | `0` | Direct withdrawal to NFT holder wallet |
+| **BURN** | `1` | Permanently remove USID from circulation (deflationary) |
+| **AIRDROP** | `2` | Accumulate for periodic community distribution |
+| **LP_REWARDS** | `3` | Reinject into pool reserves (compounding liquidity) |
 
-### Claiming Fees
+### Revenue Extraction
 
-```solidity
+```javascript
 const marketNFT = new ethers.Contract(MARKET_NFT_ADDRESS, marketNFTABI, signer);
-
-// Check pending fees
 const feeCollector = new ethers.Contract(FEE_COLLECTOR_ADDRESS, feeCollectorABI, provider);
-const pending = await feeCollector.pendingFees(nftId);
 
-// Claim fees (only NFT owner)
-const amount = await marketNFT.claimFees(nftId);
+// Query accrued fees for a specific market
+const pendingUSID = await feeCollector.pendingFees(nftId);
+
+// Withdraw accumulated fees (NFT holder only)
+const claimed = await marketNFT.claimFees(nftId);
 ```
 
-### Change Fee Strategy
+### Strategy Modification
 
-```solidity
-// Only NFT owner can change strategy
-await marketNFT.setFeeStrategy(nftId, 1); // Set to BURN
+```javascript
+// Transition fee strategy on-chain (NFT holder only)
+await marketNFT.setFeeStrategy(nftId, 1); // Switch to BURN mode
 ```
 
 ## Development
 
-### Project Structure
+### Repository Structure
 
 ```
 contracts/
-  core/           # Core protocol contracts
-    HLPMMFactory.sol
-    HLPMMPool.sol
-    USID.sol
-    EventEmitter.sol
-  tokens/         # Token contracts
-    HLPMMToken.sol
-    MarketNFT.sol
-  periphery/      # User-facing contracts
-    HLPMMRouter.sol
-    HLPMMQuoter.sol
-    FeeCollector.sol
-  libraries/      # Shared libraries
-    Math.sol
-    PoolMath.sol
-    FeeCalculator.sol
-    TransferHelper.sol
-  interfaces/     # Contract interfaces
-test/             # Test files
-scripts/          # Deployment scripts
+├── core/                    # Protocol primitives
+│   ├── HLPMMFactory.sol     # Market genesis engine
+│   ├── HLPMMPool.sol        # AMM execution layer
+│   ├── USID.sol             # Collateralized stablecoin
+│   └── EventEmitter.sol     # Canonical event bus
+├── tokens/                  # Asset representations
+│   ├── HLPMMToken.sol       # Market token template
+│   └── MarketNFT.sol        # Fee rights registry
+├── periphery/               # User-facing interfaces
+│   ├── HLPMMRouter.sol      # Protected swap execution
+│   ├── HLPMMQuoter.sol      # View-only simulation
+│   └── FeeCollector.sol     # Revenue aggregation
+├── libraries/               # Shared computation
+│   ├── Math.sol             # Fixed-point arithmetic
+│   ├── PoolMath.sol         # AMM invariant calculations
+│   ├── FeeCalculator.sol    # Dynamic fee engine
+│   └── TransferHelper.sol   # Safe ERC20 transfers
+└── interfaces/              # Contract ABIs
+test/                        # Hardhat test suite
+scripts/                     # Deployment automation
+subgraph/                    # TheGraph indexing
 ```
 
-### Deploy to Network
+### Deployment
 
 ```bash
+# Deploy full protocol stack to Paxeer mainnet
 npx hardhat run scripts/deploy.js --network paxeer-network
-```
 
-### Verify Contracts
-
-```bash
+# Verify source code on block explorer
 npx hardhat verify --network paxeer-network <CONTRACT_ADDRESS> <CONSTRUCTOR_ARGS>
 ```
 
 ## Testing
 
-The protocol includes comprehensive unit and integration tests:
+The protocol ships with a battle-tested suite of **274 automated tests** covering unit, integration, and edge-case scenarios.
 
 ```bash
-# Run all tests
-pnpm run test
-
-# Run with gas reporting
-REPORT_GAS=true pnpm run test
-
-# Run specific test file
-npx hardhat test test/core/HLPMMPool.test.js
+pnpm test                                    # Execute full suite
+REPORT_GAS=true pnpm test                    # Include gas profiling
+npx hardhat test test/core/HLPMMPool.test.js # Target specific module
 ```
 
-**Test Coverage:** 274 passing tests covering:
-- Library functions (Math, PoolMath, FeeCalculator)
-- Core contracts (Factory, Pool, USID, EventEmitter)
-- Token contracts (HLPMMToken, MarketNFT)
-- Periphery contracts (Router, Quoter, FeeCollector, PaxPriceOracle)
-- USID deposit/withdraw with oracle integration
-- Integration tests (full market creation and swap flows)
+### Coverage Matrix
+
+| Layer | Modules | Coverage |
+|-------|---------|----------|
+| **Libraries** | Math, PoolMath, FeeCalculator | Arithmetic edge cases, overflow protection |
+| **Core** | Factory, Pool, USID, EventEmitter | Market genesis, swap execution, oracle integration |
+| **Tokens** | HLPMMToken, MarketNFT | ERC20/721 compliance, ownership transfers |
+| **Periphery** | Router, Quoter, FeeCollector | Slippage enforcement, multi-hop routing, fee distribution |
+| **Integration** | End-to-end flows | Market creation → trading → fee extraction lifecycle |
 
 ## Contributing
 
-We welcome contributions to the HLPMM Protocol. Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting a pull request.
+HLPMM is built in the open and welcomes contributions from the community. Whether you're fixing bugs, improving documentation, or proposing new features, we appreciate your involvement.
 
-### Quick Contribution Steps
+Review [CONTRIBUTING.md](CONTRIBUTING.md) for commit conventions, code style, and PR requirements.
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+```bash
+# Standard contribution workflow
+git clone https://github.com/Paxeer-Network/HLPMM-protocol.git
+git checkout -b feature/your-feature
+# Make changes, write tests
+pnpm test                           # Ensure all tests pass
+git commit -m 'feat: description'   # Follow conventional commits
+git push origin feature/your-feature
+# Open PR against main branch
+```
 
 ## Security
 
-Security is a top priority for the HLPMM Protocol. Please review our [Security Policy](SECURITY.md) for:
+Protocol security is non-negotiable. HLPMM undergoes continuous security review and maintains an active bug bounty program.
 
-- Reporting vulnerabilities
-- Bug bounty program
-- Security best practices
+See [SECURITY.md](SECURITY.md) for:
+- Responsible disclosure process
+- Bug bounty scope and rewards
+- Security architecture documentation
 
-**Do not open public issues for security vulnerabilities.** Instead, email security concerns to **infopaxeer@paxeer.app**.
+> **⚠️ Critical:** Do not disclose vulnerabilities via public issues. Report security concerns directly to **security@paxeer.app** for coordinated disclosure.
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+Licensed under the **GNU General Public License v3.0**—see [LICENSE](LICENSE) for terms.
 
+```
 Copyright (C) 2026 PaxLabs Inc.
+SPDX-License-Identifier: GPL-3.0-only
+```
 
-## Contact
+## Contact & Resources
 
-| Channel | Link |
-|---------|------|
-| Website | [paxeer.app](https://paxeer.app) |
-| Explorer | [paxscan.paxeer.app](https://paxscan.paxeer.app) |
-| Documentation | [docs.hyperpaxeer.com](https://docs.hyperpaxeer.com) |
-| Sidiora | [sidiora.hyperpaxeer.com](https://sidiora.hyperpaxeer.com) |
-| Twitter | [@paxeer_app](https://x.com/paxeer_app) |
-| Email | [infopaxeer@paxeer.app](mailto:infopaxeer@paxeer.app) |
+| Resource | Link |
+|----------|------|
+| **Protocol Documentation** | [docs.hyperpaxeer.com](https://docs.hyperpaxeer.com) |
+| **Block Explorer** | [paxscan.paxeer.app](https://paxscan.paxeer.app) |
+| **Sidiora Interface** | [sidiora.hyperpaxeer.com](https://sidiora.hyperpaxeer.com) |
+| **Website** | [paxeer.app](https://paxeer.app) |
+| **Twitter/X** | [@paxeer_app](https://x.com/paxeer_app) |
+| **General Inquiries** | [infopaxeer@paxeer.app](mailto:infopaxeer@paxeer.app) |
+| **Security Reports** | [security@paxeer.app](mailto:security@paxeer.app) |
+
+---
+
+<p align="center">
+  <strong>Built for the permissionless economy.</strong><br>
+  <sub>HLPMM Protocol © 2026 PaxLabs Inc.</sub>
+</p>

@@ -8,7 +8,7 @@ dataSources:
     source:
       address: "0x83Fbd4b98fF5E42cbe2A2B51E6c658B8a8f142F6"
       abi: EventEmitter
-      startBlock: 500000
+      startBlock: 635000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -47,7 +47,7 @@ dataSources:
     source:
       address: "0x68c92DD2cE0CB45F7Ed596DA4afbFAE69bd9Da08"
       abi: MarketNFT
-      startBlock: 500000
+      startBlock: 635000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -73,7 +73,7 @@ dataSources:
     source:
       address: "0xEF283FF45379e2d47Ce8db0C613125072c1A1c58"
       abi: HLPMMFactory
-      startBlock: 500000
+      startBlock: 635000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -98,7 +98,7 @@ dataSources:
     source:
       address: "0x6C32c255EeBD6A72B56ee82454d7140020919652"
       abi: ERC20
-      startBlock: 500000
+      startBlock: 635000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

@@ -1,0 +1,19 @@
+[Unit]
+Description=PAX Price Oracle Keeper Service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/HyperScailing-Leveraged-Product-Market-Maker
+Environment=NODE_ENV=production
+Environment=PATH=/root/.nvm/versions/node/v22.22.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+EnvironmentFile=/root/HyperScailing-Leveraged-Product-Market-Maker/.env
+ExecStart=/root/.nvm/versions/node/v22.22.0/bin/npx hardhat run scripts/oracle-keeper.js --network paxeer-network
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

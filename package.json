@@ -18,6 +18,7 @@
     "deploy:paxeer": "hardhat run scripts/deploy.js --network paxeer-network",
     "deploy:cli": "node scripts/deploy-cli.js",
     "deploy:testnet": "hardhat run scripts/deploy.js --network sepolia",
+    "keeper:start": "hardhat run scripts/oracle-keeper.js --network paxeer-network",
     "test:paxeer": "hardhat run scripts/e2e-test.js --network paxeer-network",
     "verify:all": "hardhat run scripts/verify-deployments.js",
     "lint": "pnpm lint:sol && pnpm lint:js",

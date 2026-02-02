@@ -24,6 +24,7 @@ import {
   ZERO_BD,
   ZERO_BI,
   ONE_BI,
+  USID_ADDRESS,
   convertToDecimal,
   getOrCreateProtocol,
   getOrCreateUser,
@@ -65,7 +66,7 @@ export function handleMarketCreated(event: MarketCreated): void {
   market.reserveUSID = convertToDecimal(BigInt.fromI64(10000).times(BigInt.fromI64(10).pow(18)), 18);
   market.reserveToken = convertToDecimal(BigInt.fromI64(1000000000).times(BigInt.fromI64(10).pow(18)), 18);
   market.spotPrice = market.reserveUSID.div(market.reserveToken);
-  market.marketCap = market.reserveUSID;
+  market.marketCap = market.spotPrice.times(token.totalSupply);
   market.volumeUSID = ZERO_BD;
   market.volumeToken = ZERO_BD;
   market.feesUSID = ZERO_BD;
@@ -119,9 +120,10 @@ export function handleSwap(event: SwapEvent): void {
   let reserveUSID = convertToDecimal(event.params.newReserveUSID, 18);
   let reserveToken = convertToDecimal(event.params.newReserveToken, 18);
   
-  // Determine USID volume
+  // Determine USID volume - check if tokenIn is USID
   let volumeUSID: BigDecimal;
-  if (event.params.tokenIn.toHexString() == "0x49345967360a401bf99840dafc8e51148a5b7897") {
+  let isUSIDIn = event.params.tokenIn.toHexString() == USID_ADDRESS;
+  if (isUSIDIn) {
     volumeUSID = amountIn;
   } else {
     volumeUSID = amountOut;
@@ -152,9 +154,17 @@ export function handleSwap(event: SwapEvent): void {
   market.reserveUSID = reserveUSID;
   market.reserveToken = reserveToken;
   market.spotPrice = reserveUSID.div(reserveToken);
-  market.marketCap = reserveUSID;
+  
+  // Calculate marketCap as spotPrice × totalSupply
+  let token = Token.load(market.token);
+  if (token) {
+    market.marketCap = market.spotPrice.times(token.totalSupply);
+  }
   market.volumeUSID = market.volumeUSID.plus(volumeUSID);
-  market.volumeToken = market.volumeToken.plus(amountIn.plus(amountOut).minus(volumeUSID));
+  // Convert token volume to USID value using spot price
+  let tokenAmount = amountIn.plus(amountOut).minus(volumeUSID);
+  let tokenVolumeInUSID = tokenAmount.times(market.spotPrice);
+  market.volumeToken = market.volumeToken.plus(tokenVolumeInUSID);
   market.feesUSID = market.feesUSID.plus(feeAmount);
   market.swapCount = market.swapCount.plus(ONE_BI);
   market.updatedAt = event.block.timestamp;
@@ -182,8 +192,8 @@ export function handleSwap(event: SwapEvent): void {
   }
   
   // Update time series data
-  updateMarketHourData(market, event.block.timestamp, market.spotPrice, volumeUSID, feeAmount);
-  updateMarketDayData(market, event.block.timestamp, market.spotPrice, volumeUSID, feeAmount);
+  updateMarketHourData(market, event.block.timestamp, market.spotPrice, volumeUSID, tokenVolumeInUSID, feeAmount);
+  updateMarketDayData(market, event.block.timestamp, market.spotPrice, volumeUSID, tokenVolumeInUSID, feeAmount);
   updateProtocolDayData(event.block.timestamp, volumeUSID, feeAmount, ONE_BI, ZERO_BI);
 }
 
