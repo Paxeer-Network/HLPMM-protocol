@@ -80,7 +80,7 @@ module.exports = {
   },
 networks: {
     'paxeer-network': {
-      url: 'http://147.93.139.18:8545',
+      url: 'https://public-rpc.paxeer.app/rpc',
       accounts: privateKey ? [privateKey] : [] // <-- ADD THIS LINE
     },
   },
