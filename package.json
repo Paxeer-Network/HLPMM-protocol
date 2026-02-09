@@ -51,7 +51,7 @@
     "@openzeppelin/contracts": "^5.4.0",
     "@openzeppelin/contracts-upgradeable": "^5.4.0",
     "@openzeppelin/hardhat-upgrades": "^3.9.1",
-    "axios": "^1.11.0",
+    "axios": "^1.13.5",
     "cassandra-driver": "^4.8.0",
     "chai": "^6.2.2",
     "cors": "^2.8.5",
