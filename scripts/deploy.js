@@ -101,7 +101,7 @@ async function main() {
   // Set factory on EventEmitter
   console.log("Setting factory on EventEmitter...");
   const eventEmitterContract = await ethers.getContractAt("EventEmitter", deployedAddresses.eventEmitter);
-  await eventEmitterContract.setFactory(deployedAddresses.factory, deployedAddresses.marketNFT);
+  await eventEmitterContract.setFactory(deployedAddresses.factory, deployedAddresses.marketNFT, deployedAddresses.feeCollector);
   console.log("EventEmitter factory set");
 
   // Set factory on MarketNFT

@@ -204,7 +204,17 @@ contract MarketNFT is IMarketNFT, IERC721Metadata {
             interfaceId == 0x01ffc9a7 || // ERC165
             interfaceId == 0x80ac58cd || // ERC721
             interfaceId == 0x5b5e139f;   // ERC721Metadata
-   }
+    }
+
+    function setFeeCollector(address feeCollector_) external {
+        if (msg.sender != _deployer) revert Unauthorized();
+        feeCollector = feeCollector_;
+    }
+
+    function setEventEmitter(address eventEmitter_) external {
+        if (msg.sender != _deployer) revert Unauthorized();
+        eventEmitter = eventEmitter_;
+    }
 }
 
 

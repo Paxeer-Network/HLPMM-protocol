@@ -1,0 +1,177 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IHLPMMQuoterV2",
+  "sourceName": "contracts/v2/interfaces/IHLPMMQuoterV2.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "factory",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "getPoolInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "virtualReserveUSD",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "realReserveUSD",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "effectiveReserveUSD",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "reserveToken",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "spotPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "marketCap",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "volatility",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "poolAge",
+              "type": "uint32"
+            }
+          ],
+          "internalType": "struct IHLPMMQuoterV2.PoolInfo",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenIn",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "tokenOut",
+          "type": "address"
+        }
+      ],
+      "name": "quoteExactInput",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceImpact",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "quoteStableToToken",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceImpact",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountIn",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "quoteTokenToStable",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "amountOut",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "priceImpact",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

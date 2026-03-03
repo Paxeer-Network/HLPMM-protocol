@@ -22,15 +22,15 @@ describe("USID", function () {
     const mockDEX = await MockDEX.deploy();
     await mockDEX.waitForDeployment();
 
-    // Deploy oracle
-    const PaxPriceOracle = await ethers.getContractFactory("PaxPriceOracle");
-    const oracle = await PaxPriceOracle.deploy(await mockDEX.getAddress());
-    await oracle.waitForDeployment();
-
     // Deploy USID
     const USID = await ethers.getContractFactory("USID");
     const usid = await USID.deploy();
     await usid.waitForDeployment();
+
+    // Deploy oracle with DEX and USID address as stable
+    const PaxPriceOracle = await ethers.getContractFactory("PaxPriceOracle");
+    const oracle = await PaxPriceOracle.deploy(await mockDEX.getAddress(), await usid.getAddress());
+    await oracle.waitForDeployment();
 
     // Set oracle
     await usid.connect(deployer).setOracle(await oracle.getAddress());

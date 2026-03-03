@@ -2,15 +2,15 @@
   "network": "paxeer-network",
   "chainId": "125",
   "deployer": "0xf263aB36de550bDa08b52d43eB253b3C0387e2bc",
-  "timestamp": "2026-02-01T14:16:13.705Z",
+  "timestamp": "2026-02-02T07:06:19.450Z",
   "contracts": {
-    "oracle": "0xF94cD7F4b890A0BbeC1031C706fe2eFF293246A0",
-    "usid": "0x6C32c255EeBD6A72B56ee82454d7140020919652",
-    "eventEmitter": "0x83Fbd4b98fF5E42cbe2A2B51E6c658B8a8f142F6",
-    "marketNFT": "0x68c92DD2cE0CB45F7Ed596DA4afbFAE69bd9Da08",
-    "feeCollector": "0xB1fC5A4088E7Ff83C7bfF974b2C65f0d24c2Afa0",
-    "factory": "0xEF283FF45379e2d47Ce8db0C613125072c1A1c58",
-    "quoter": "0x1a97EE9Dc7d52aD4738ec2c9E857CdA262f3F60F",
-    "router": "0xcA8005aCc73eb040fE91Ac7f145a5b6Db3F232Bb"
+    "usid": "0x035a308719A91047BcA94D2738c0e1C05516ad4C",
+    "oracle": "0xd0079A1dF72b462e183a4f00528aFb10d55672Bd",
+    "eventEmitter": "0x156EA65069705c858d0C96cdF8a4A0037e707997",
+    "marketNFT": "0x6408681CabAd5AC1cb7d5ACF41275bDbeeE3EB45",
+    "feeCollector": "0xe8ab6e7133832f30871C7eb7E04bf48104ED562e",
+    "factory": "0xD6B196772eF1f04e41E1f5Ff934687ED55A8C12F",
+    "quoter": "0x5Ad8Bc93061D8560eaE127B9802CE2E5Cc8a4F4b",
+    "router": "0xE61C9d6Ec9710f6c38166ca8d20428EBa8dB9007"
   }
 }

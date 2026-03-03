@@ -31,4 +31,6 @@ interface IFeeCollector {
     function accumulateFee(uint256 nftId, uint256 amount) external;
     function distributeFees(uint256 nftId, address recipient, FeeStrategy strategy) external returns (uint256 amount);
     function pendingFees(uint256 nftId) external view returns (uint256);
+    function setEventEmitter(address eventEmitter_) external;
+    function setMarketNFT(address marketNFT_) external;
 }

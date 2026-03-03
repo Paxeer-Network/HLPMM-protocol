@@ -44,7 +44,7 @@ async function deployProtocolFixture() {
   // Wire permissions
   await usid.setFactory(await factory.getAddress());
   await usid.setOracle(await oracle.getAddress());
-  await eventEmitter.setFactory(await factory.getAddress(), await marketNFT.getAddress());
+  await eventEmitter.setFactory(await factory.getAddress(), await marketNFT.getAddress(), await feeCollector.getAddress());
   await marketNFT.setFactory(
     await factory.getAddress(),
     await feeCollector.getAddress(),

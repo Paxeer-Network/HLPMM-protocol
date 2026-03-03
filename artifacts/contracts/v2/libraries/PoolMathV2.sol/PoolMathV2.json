@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "PoolMathV2",
+  "sourceName": "contracts/v2/libraries/PoolMathV2.sol",
+  "abi": [],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea26469706673582212200ba6493e647eb429ac351ba958a37e2c3773827cef38dcbf8815dc3d41ef2abc64736f6c634300081b0033",
+  "deployedBytecode": "0x600080fdfea26469706673582212200ba6493e647eb429ac351ba958a37e2c3773827cef38dcbf8815dc3d41ef2abc64736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

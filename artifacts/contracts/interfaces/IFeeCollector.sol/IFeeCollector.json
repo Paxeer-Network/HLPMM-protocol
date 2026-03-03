@@ -184,6 +184,32 @@
       "type": "function"
     },
     {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "eventEmitter_",
+          "type": "address"
+        }
+      ],
+      "name": "setEventEmitter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "marketNFT_",
+          "type": "address"
+        }
+      ],
+      "name": "setMarketNFT",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [],
       "name": "usid",
       "outputs": [

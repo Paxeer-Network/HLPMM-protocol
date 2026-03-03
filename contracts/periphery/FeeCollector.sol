@@ -116,7 +116,17 @@ contract FeeCollector is IFeeCollector {
         for (uint256 i = 0; i < recipients.length; i++) {
             TransferHelper.safeTransfer(usid, recipients[i], amounts[i]);
         }
-   }
+    }
+
+    function setEventEmitter(address eventEmitter_) external {
+        if (msg.sender != _deployer) revert Unauthorized();
+        eventEmitter = eventEmitter_;
+    }
+
+    function setMarketNFT(address marketNFT_) external {
+        if (msg.sender != _deployer) revert Unauthorized();
+        marketNFT = marketNFT_;
+    }
 }
 
 

@@ -40,12 +40,13 @@ contract EventEmitter is IEventEmitter {
         _deployer = msg.sender;
     }
 
-    function setFactory(address factory_, address marketNFT_) external {
+    function setFactory(address factory_, address marketNFT_, address feeCollector_) external {
         if (msg.sender != _deployer) revert Unauthorized();
         if (factory != address(0)) revert FactoryAlreadySet();
         factory = factory_;
         isAuthorizedEmitter[factory_] = true;
         isAuthorizedEmitter[marketNFT_] = true;
+        isAuthorizedEmitter[feeCollector_] = true;
     }
 
     function authorizeEmitter(address emitter) external onlyFactory {
@@ -53,6 +54,16 @@ contract EventEmitter is IEventEmitter {
     }
 
     function revokeEmitter(address emitter) external onlyFactory {
+        isAuthorizedEmitter[emitter] = false;
+    }
+
+    function adminAuthorizeEmitter(address emitter) external {
+        if (msg.sender != _deployer) revert Unauthorized();
+        isAuthorizedEmitter[emitter] = true;
+    }
+
+    function adminRevokeEmitter(address emitter) external {
+        if (msg.sender != _deployer) revert Unauthorized();
         isAuthorizedEmitter[emitter] = false;
     }
 

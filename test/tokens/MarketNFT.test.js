@@ -219,7 +219,7 @@ describe("MarketNFT", function () {
     it("Should allow owner to change fee strategy", async function () {
       const { marketNFT, deployer, factory, pool1, user1, feeCollectorContract, eventEmitterContract } = await loadFixture(deployMarketNFTFixture);
       
-      await eventEmitterContract.connect(deployer).setFactory(factory.address, await marketNFT.getAddress());
+      await eventEmitterContract.connect(deployer).setFactory(factory.address, await marketNFT.getAddress(), await feeCollectorContract.getAddress());
       await marketNFT.connect(deployer).setFactory(
         factory.address,
         await feeCollectorContract.getAddress(),
@@ -235,7 +235,7 @@ describe("MarketNFT", function () {
     it("Should emit FeeStrategyUpdated event", async function () {
       const { marketNFT, deployer, factory, pool1, user1, feeCollectorContract, eventEmitterContract } = await loadFixture(deployMarketNFTFixture);
       
-      await eventEmitterContract.connect(deployer).setFactory(factory.address, await marketNFT.getAddress());
+      await eventEmitterContract.connect(deployer).setFactory(factory.address, await marketNFT.getAddress(), await feeCollectorContract.getAddress());
       await marketNFT.connect(deployer).setFactory(
         factory.address,
         await feeCollectorContract.getAddress(),
@@ -252,7 +252,7 @@ describe("MarketNFT", function () {
     it("Should revert if non-owner tries to change strategy", async function () {
       const { marketNFT, deployer, factory, pool1, user1, user2, feeCollectorContract, eventEmitterContract } = await loadFixture(deployMarketNFTFixture);
       
-      await eventEmitterContract.connect(deployer).setFactory(factory.address, await marketNFT.getAddress());
+      await eventEmitterContract.connect(deployer).setFactory(factory.address, await marketNFT.getAddress(), await feeCollectorContract.getAddress());
       await marketNFT.connect(deployer).setFactory(
         factory.address,
         await feeCollectorContract.getAddress(),

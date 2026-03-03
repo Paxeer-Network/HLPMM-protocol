@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "FeeCalculatorV2",
+  "sourceName": "contracts/v2/libraries/FeeCalculatorV2.sol",
+  "abi": [],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea26469706673582212206997bd5e86967f5979f96ab6f296988b9f66207e3fb40750c145b5f38a589a6d64736f6c634300081b0033",
+  "deployedBytecode": "0x600080fdfea26469706673582212206997bd5e86967f5979f96ab6f296988b9f66207e3fb40750c145b5f38a589a6d64736f6c634300081b0033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

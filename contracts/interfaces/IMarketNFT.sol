@@ -38,4 +38,6 @@ interface IMarketNFT is IERC721 {
     function mint(address to, address pool, FeeStrategy initialStrategy) external returns (uint256 tokenId);
     function setFeeStrategy(uint256 tokenId, FeeStrategy strategy) external;
     function claimFees(uint256 tokenId) external returns (uint256 amount);
+    function setFeeCollector(address feeCollector_) external;
+    function setEventEmitter(address eventEmitter_) external;
 }

@@ -60,6 +60,8 @@ interface IEventEmitter {
 
     function authorizeEmitter(address emitter) external;
     function revokeEmitter(address emitter) external;
+    function adminAuthorizeEmitter(address emitter) external;
+    function adminRevokeEmitter(address emitter) external;
 
     function emitMarketCreated(
         address pool,

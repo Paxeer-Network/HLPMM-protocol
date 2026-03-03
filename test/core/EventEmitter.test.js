@@ -5,13 +5,13 @@ const { ZERO_ADDRESS, FeeStrategy } = require("../helpers/constants");
 
 describe("EventEmitter", function () {
   async function deployEventEmitterFixture() {
-    const [deployer, factory, pool1, pool2, user1] = await ethers.getSigners();
+    const [deployer, factory, pool1, pool2, user1, feeCollector] = await ethers.getSigners();
     
     const EventEmitter = await ethers.getContractFactory("EventEmitter");
     const eventEmitter = await EventEmitter.deploy();
     await eventEmitter.waitForDeployment();
 
-    return { eventEmitter, deployer, factory, pool1, pool2, user1 };
+    return { eventEmitter, deployer, factory, pool1, pool2, user1, feeCollector };
   }
 
   describe("Deployment", function () {
@@ -23,9 +23,9 @@ describe("EventEmitter", function () {
 
   describe("setFactory", function () {
     it("Should allow deployer to set factory", async function () {
-      const { eventEmitter, deployer, factory, pool1 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       
       expect(await eventEmitter.factory()).to.equal(factory.address);
       expect(await eventEmitter.isAuthorizedEmitter(factory.address)).to.be.true;
@@ -33,38 +33,38 @@ describe("EventEmitter", function () {
     });
 
     it("Should revert if non-deployer tries to set factory", async function () {
-      const { eventEmitter, factory, pool1, user1 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, factory, pool1, user1, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
       await expect(
-        eventEmitter.connect(user1).setFactory(factory.address, pool1.address)
+        eventEmitter.connect(user1).setFactory(factory.address, pool1.address, feeCollector.address)
       ).to.be.revertedWithCustomError(eventEmitter, "Unauthorized");
     });
 
     it("Should revert if factory already set", async function () {
-      const { eventEmitter, deployer, factory, pool1, user1 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, user1, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       
       await expect(
-        eventEmitter.connect(deployer).setFactory(user1.address, pool1.address)
+        eventEmitter.connect(deployer).setFactory(user1.address, pool1.address, feeCollector.address)
       ).to.be.revertedWithCustomError(eventEmitter, "FactoryAlreadySet");
     });
   });
 
   describe("authorizeEmitter", function () {
     it("Should allow factory to authorize emitters", async function () {
-      const { eventEmitter, deployer, factory, pool1, pool2 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, pool2, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       await eventEmitter.connect(factory).authorizeEmitter(pool2.address);
       
       expect(await eventEmitter.isAuthorizedEmitter(pool1.address)).to.be.true;
     });
 
     it("Should revert if non-factory tries to authorize", async function () {
-      const { eventEmitter, deployer, factory, pool1, pool2, user1 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, pool2, user1, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       
       await expect(
         eventEmitter.connect(user1).authorizeEmitter(pool1.address)
@@ -74,9 +74,9 @@ describe("EventEmitter", function () {
 
   describe("revokeEmitter", function () {
     it("Should allow factory to revoke emitters", async function () {
-      const { eventEmitter, deployer, factory, pool1, pool2 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, pool2, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       await eventEmitter.connect(factory).authorizeEmitter(pool2.address);
       await eventEmitter.connect(factory).revokeEmitter(pool2.address);
       
@@ -86,9 +86,9 @@ describe("EventEmitter", function () {
 
   describe("emitMarketCreated", function () {
     it("Should emit MarketCreated event from authorized emitter", async function () {
-      const { eventEmitter, deployer, factory, pool1, user1 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, user1, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       
       const tokenAddress = "0x1234567890123456789012345678901234567890";
       const nftId = 1;
@@ -106,9 +106,9 @@ describe("EventEmitter", function () {
     });
 
     it("Should revert if unauthorized emitter", async function () {
-      const { eventEmitter, deployer, factory, pool1, user1 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, user1, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       
       await expect(
         eventEmitter.connect(user1).emitMarketCreated(
@@ -125,9 +125,9 @@ describe("EventEmitter", function () {
 
   describe("emitSwap", function () {
     it("Should emit Swap event from authorized pool", async function () {
-      const { eventEmitter, deployer, factory, pool1 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       
       const tokenIn = "0x1111111111111111111111111111111111111111";
       const tokenOut = "0x2222222222222222222222222222222222222222";
@@ -151,9 +151,9 @@ describe("EventEmitter", function () {
 
   describe("emitFeeClaimed", function () {
     it("Should emit FeeClaimed event", async function () {
-      const { eventEmitter, deployer, factory, pool1, user1 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, user1, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       
       await expect(
         eventEmitter.connect(pool1).emitFeeClaimed(
@@ -168,9 +168,9 @@ describe("EventEmitter", function () {
 
   describe("emitFeeStrategyUpdated", function () {
     it("Should emit FeeStrategyUpdated event", async function () {
-      const { eventEmitter, deployer, factory, pool1 } = await loadFixture(deployEventEmitterFixture);
+      const { eventEmitter, deployer, factory, pool1, feeCollector } = await loadFixture(deployEventEmitterFixture);
       
-      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address);
+      await eventEmitter.connect(deployer).setFactory(factory.address, pool1.address, feeCollector.address);
       
       await expect(
         eventEmitter.connect(factory).emitFeeStrategyUpdated(1, FeeStrategy.BURN)
